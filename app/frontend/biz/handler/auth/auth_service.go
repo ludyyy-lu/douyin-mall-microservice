@@ -17,10 +17,10 @@ package auth
 import (
 	"context"
 
-	"github.com/cloudwego/biz-demo/gomall/app/frontend/biz/service"
-	"github.com/cloudwego/biz-demo/gomall/app/frontend/biz/utils"
-	auth "github.com/cloudwego/biz-demo/gomall/app/frontend/hertz_gen/frontend/auth"
-	common "github.com/cloudwego/biz-demo/gomall/app/frontend/hertz_gen/frontend/common"
+	"github.com/All-Done-Right/douyin-mall-microservice/app/frontend/biz/service"
+	"github.com/All-Done-Right/douyin-mall-microservice/app/frontend/biz/utils"
+	auth "github.com/All-Done-Right/douyin-mall-microservice/app/frontend/hertz_gen/frontend/auth"
+	common "github.com/All-Done-Right/douyin-mall-microservice/app/frontend/hertz_gen/frontend/common"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
 )
@@ -55,7 +55,6 @@ func Register(ctx context.Context, c *app.RequestContext) {
 	}
 
 	_, err = service.NewRegisterService(ctx, c).Run(&req)
-
 	if err != nil {
 		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
 		return
@@ -75,7 +74,6 @@ func Logout(ctx context.Context, c *app.RequestContext) {
 	}
 
 	_, err = service.NewLogoutService(ctx, c).Run(&req)
-
 	if err != nil {
 		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
 		return

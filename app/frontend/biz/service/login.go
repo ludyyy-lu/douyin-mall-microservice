@@ -17,9 +17,9 @@ package service
 import (
 	"context"
 
-	auth "github.com/cloudwego/biz-demo/gomall/app/frontend/hertz_gen/frontend/auth"
-	"github.com/cloudwego/biz-demo/gomall/app/frontend/infra/rpc"
-	"github.com/cloudwego/biz-demo/gomall/rpc_gen/kitex_gen/user"
+	auth "github.com/All-Done-Right/douyin-mall-microservice/app/frontend/hertz_gen/frontend/auth"
+	"github.com/All-Done-Right/douyin-mall-microservice/app/frontend/infra/rpc"
+	"github.com/All-Done-Right/douyin-mall-microservice/rpc_gen/kitex_gen/user"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/hertz-contrib/sessions"
 )

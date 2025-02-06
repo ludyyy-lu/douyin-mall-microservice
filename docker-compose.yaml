@@ -5,15 +5,15 @@ services:
     ports:
       - "8500:8500"
   mysql:
-    image: "mysql:latest"
+    image: 'mysql:latest'
     ports:
       - 3306:3306
     environment:
+      - MYSQL_DATABASE=user
+      - MYSQL_USER=gorm
+      - MYSQL_PASSWORD=gorm
       - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_DATABASE=demo_proto
-    volumes:
-      - ./db/sql/ini:/docker-entrypoint-initdb.d
   redis:
-    image: "redis:latest"
+    image: 'redis:latest'
     ports:
       - 6379:6379

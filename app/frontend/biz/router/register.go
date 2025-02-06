@@ -17,8 +17,8 @@
 package router
 
 import (
-	auth "github.com/cloudwego/biz-demo/gomall/app/frontend/biz/router/auth"
-	home "github.com/cloudwego/biz-demo/gomall/app/frontend/biz/router/home"
+	auth "github.com/All-Done-Right/douyin-mall-microservice/app/frontend/biz/router/auth"
+	home "github.com/All-Done-Right/douyin-mall-microservice/app/frontend/biz/router/home"
 	"github.com/cloudwego/hertz/pkg/app/server"
 )
 

@@ -1,15 +1,13 @@
-module github.com/cloudwego/biz-demo/gomall/app/frontend
+module github.com/All-Done-Right/douyin-mall-microservice/app/frontend
 
-go 1.21.9
-
-toolchain go1.23.2
+go 1.23.2
 
 replace github.com/apache/thrift => github.com/apache/thrift v0.13.0
 
-replace github.com/cloudwego/biz-demo/gomall/rpc_gen => ../../rpc_gen
+replace github.com/All-Done-Right/douyin-mall-microservice/rpc_gen => ../../rpc_gen
 
 require (
-	github.com/cloudwego/biz-demo/gomall/rpc_gen v0.0.0-00010101000000-000000000000
+	github.com/All-Done-Right/douyin-mall-microservice/rpc_gen v0.0.0-00010101000000-000000000000
 	github.com/cloudwego/hertz v0.8.1
 	github.com/cloudwego/kitex v0.12.1
 	github.com/hertz-contrib/cors v0.1.0
@@ -35,10 +33,11 @@ require (
 	github.com/armon/go-metrics v0.0.0-20180917152333-f0300d1749da // indirect
 	github.com/bytedance/go-tagexpr/v2 v2.9.2 // indirect
 	github.com/bytedance/gopkg v0.1.1 // indirect
-	github.com/bytedance/sonic v1.12.5 // indirect
-	github.com/bytedance/sonic/loader v0.2.0 // indirect
+	github.com/bytedance/sonic v1.12.8 // indirect
+	github.com/bytedance/sonic/loader v0.2.2 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
-	github.com/cloudwego/base64x v0.1.4 // indirect
+	github.com/choleraehyq/pid v0.0.19 // indirect
+	github.com/cloudwego/base64x v0.1.5 // indirect
 	github.com/cloudwego/configmanager v0.2.2 // indirect
 	github.com/cloudwego/dynamicgo v0.4.7-0.20241220085612-55704ea4ca8f // indirect
 	github.com/cloudwego/fastpb v0.0.5 // indirect

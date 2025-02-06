@@ -18,7 +18,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/cloudwego/biz-demo/gomall/rpc_gen/kitex_gen/user"
+	"github.com/All-Done-Right/douyin-mall-microservice/rpc_gen/kitex_gen/user"
 )
 
 func Test_iniUserClient(t *testing.T) {

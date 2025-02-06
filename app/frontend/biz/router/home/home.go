@@ -17,7 +17,7 @@
 package home
 
 import (
-	home "github.com/cloudwego/biz-demo/gomall/app/frontend/biz/handler/home"
+	home "github.com/All-Done-Right/douyin-mall-microservice/app/frontend/biz/handler/home"
 	"github.com/cloudwego/hertz/pkg/app/server"
 )
 
