@@ -16,6 +16,7 @@ package service
 
 import (
 	"context"
+	"fmt"
 
 	auth "github.com/All-Done-Right/douyin-mall-microservice/app/frontend/hertz_gen/frontend/auth"
 	"github.com/All-Done-Right/douyin-mall-microservice/app/frontend/infra/rpc"
@@ -52,7 +53,11 @@ func (h *LoginService) Run(req *auth.LoginReq) (redirect string, token string, e
 		UserId: resp.UserId,
 	}
 	// 通过此客户端 访问 认证服务 的服务端
+	fmt.Println("启动分发token")
+
 	tokenResp, err := rpc.AuthClient.DeliverTokenByRPC(h.Context, tokenReq)
+	fmt.Println(tokenResp)
+	fmt.Println(err)
 	if err != nil {
 		return "", "", err
 	}

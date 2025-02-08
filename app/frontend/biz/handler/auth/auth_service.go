@@ -16,6 +16,7 @@ package auth
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/All-Done-Right/douyin-mall-microservice/app/frontend/biz/service"
 	"github.com/All-Done-Right/douyin-mall-microservice/app/frontend/biz/utils"
@@ -40,6 +41,7 @@ func Login(ctx context.Context, c *app.RequestContext) {
 		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
 		return
 	}
+	fmt.Println("登录验证成功")
 
 	if err != nil {
 		utils.SendErrResponse(ctx, c, consts.StatusOK, err)

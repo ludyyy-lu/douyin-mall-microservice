@@ -15,6 +15,8 @@
 package rpc
 
 import (
+	"github.com/cloudwego/kitex/pkg/discovery"
+	"log"
 	"sync"
 
 	"github.com/All-Done-Right/douyin-mall-microservice/app/frontend/conf"
@@ -32,6 +34,17 @@ var (
 	once sync.Once
 )
 
+// getConsulResolver 创建并返回一个 Consul 解析器
+func getConsulResolver() (discovery.Resolver, error) {
+	registryAddr := conf.GetConf().Hertz.RegistryAddr
+	r, err := consul.NewConsulResolver(registryAddr)
+	if err != nil {
+		log.Printf("Failed to create Consul resolver: %v", err)
+		return nil, err
+	}
+	return r, nil
+}
+
 func InitClient() {
 	once.Do(func() {
 		initUserClient()
@@ -41,6 +54,7 @@ func InitClient() {
 
 func initUserClient() {
 	r, err := consul.NewConsulResolver(conf.GetConf().Hertz.RegistryAddr)
+	//r, err := getConsulResolver()
 	frontendUtils.MustHandleError(err)
 	UserClient, err = userservice.NewClient("user", client.WithResolver(r))
 	frontendUtils.MustHandleError(err)
