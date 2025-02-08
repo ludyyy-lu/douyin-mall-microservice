@@ -35,11 +35,22 @@ func Login(ctx context.Context, c *app.RequestContext) {
 		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
 		return
 	}
-	redirect, err := service.NewLoginService(ctx, c).Run(&req)
+	redirect, token, err := service.NewLoginService(ctx, c).Run(&req)
 	if err != nil {
 		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
 		return
 	}
+
+	if err != nil {
+		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
+		return
+	}
+
+	// 将令牌返回给前端
+	c.JSON(consts.StatusOK, map[string]interface{}{
+		"token": token,
+	})
+
 	c.Redirect(consts.StatusFound, []byte(redirect))
 }
 

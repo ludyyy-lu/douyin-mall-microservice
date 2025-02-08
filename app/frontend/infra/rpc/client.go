@@ -19,6 +19,7 @@ import (
 
 	"github.com/All-Done-Right/douyin-mall-microservice/app/frontend/conf"
 	frontendUtils "github.com/All-Done-Right/douyin-mall-microservice/app/frontend/utils"
+	"github.com/All-Done-Right/douyin-mall-microservice/rpc_gen/kitex_gen/auth/authservice"
 	"github.com/All-Done-Right/douyin-mall-microservice/rpc_gen/kitex_gen/user/userservice"
 	"github.com/cloudwego/kitex/client"
 	consul "github.com/kitex-contrib/registry-consul"
@@ -26,6 +27,7 @@ import (
 
 var (
 	UserClient userservice.Client
+	AuthClient authservice.Client
 
 	once sync.Once
 )
@@ -33,6 +35,7 @@ var (
 func InitClient() {
 	once.Do(func() {
 		initUserClient()
+		initAuthClient()
 	})
 }
 
@@ -40,5 +43,12 @@ func initUserClient() {
 	r, err := consul.NewConsulResolver(conf.GetConf().Hertz.RegistryAddr)
 	frontendUtils.MustHandleError(err)
 	UserClient, err = userservice.NewClient("user", client.WithResolver(r))
+	frontendUtils.MustHandleError(err)
+}
+
+func initAuthClient() {
+	r, err := consul.NewConsulResolver(conf.GetConf().Hertz.RegistryAddr)
+	frontendUtils.MustHandleError(err)
+	AuthClient, err = authservice.NewClient("auth", client.WithResolver(r))
 	frontendUtils.MustHandleError(err)
 }

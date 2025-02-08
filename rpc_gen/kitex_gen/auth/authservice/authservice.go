@@ -29,6 +29,13 @@ var serviceMethods = map[string]kitex.MethodInfo{
 		false,
 		kitex.WithStreamingMode(kitex.StreamingUnary),
 	),
+	"RenewTokenByRPC": kitex.NewMethodInfo(
+		renewTokenByRPCHandler,
+		newRenewTokenByRPCArgs,
+		newRenewTokenByRPCResult,
+		false,
+		kitex.WithStreamingMode(kitex.StreamingUnary),
+	),
 }
 
 var (
@@ -401,6 +408,159 @@ func (p *VerifyTokenByRPCResult) GetResult() interface{} {
 	return p.Success
 }
 
+func renewTokenByRPCHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(auth.RenewTokenReq)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(auth.AuthService).RenewTokenByRPC(ctx, req)
+		if err != nil {
+			return err
+		}
+		return st.SendMsg(resp)
+	case *RenewTokenByRPCArgs:
+		success, err := handler.(auth.AuthService).RenewTokenByRPC(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*RenewTokenByRPCResult)
+		realResult.Success = success
+		return nil
+	default:
+		return errInvalidMessageType
+	}
+}
+func newRenewTokenByRPCArgs() interface{} {
+	return &RenewTokenByRPCArgs{}
+}
+
+func newRenewTokenByRPCResult() interface{} {
+	return &RenewTokenByRPCResult{}
+}
+
+type RenewTokenByRPCArgs struct {
+	Req *auth.RenewTokenReq
+}
+
+func (p *RenewTokenByRPCArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetReq() {
+		p.Req = new(auth.RenewTokenReq)
+	}
+	return p.Req.FastRead(buf, _type, number)
+}
+
+func (p *RenewTokenByRPCArgs) FastWrite(buf []byte) (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.FastWrite(buf)
+}
+
+func (p *RenewTokenByRPCArgs) Size() (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.Size()
+}
+
+func (p *RenewTokenByRPCArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, nil
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *RenewTokenByRPCArgs) Unmarshal(in []byte) error {
+	msg := new(auth.RenewTokenReq)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var RenewTokenByRPCArgs_Req_DEFAULT *auth.RenewTokenReq
+
+func (p *RenewTokenByRPCArgs) GetReq() *auth.RenewTokenReq {
+	if !p.IsSetReq() {
+		return RenewTokenByRPCArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *RenewTokenByRPCArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+func (p *RenewTokenByRPCArgs) GetFirstArgument() interface{} {
+	return p.Req
+}
+
+type RenewTokenByRPCResult struct {
+	Success *auth.DeliveryResp
+}
+
+var RenewTokenByRPCResult_Success_DEFAULT *auth.DeliveryResp
+
+func (p *RenewTokenByRPCResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetSuccess() {
+		p.Success = new(auth.DeliveryResp)
+	}
+	return p.Success.FastRead(buf, _type, number)
+}
+
+func (p *RenewTokenByRPCResult) FastWrite(buf []byte) (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.FastWrite(buf)
+}
+
+func (p *RenewTokenByRPCResult) Size() (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.Size()
+}
+
+func (p *RenewTokenByRPCResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, nil
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *RenewTokenByRPCResult) Unmarshal(in []byte) error {
+	msg := new(auth.DeliveryResp)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *RenewTokenByRPCResult) GetSuccess() *auth.DeliveryResp {
+	if !p.IsSetSuccess() {
+		return RenewTokenByRPCResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *RenewTokenByRPCResult) SetSuccess(x interface{}) {
+	p.Success = x.(*auth.DeliveryResp)
+}
+
+func (p *RenewTokenByRPCResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func (p *RenewTokenByRPCResult) GetResult() interface{} {
+	return p.Success
+}
+
 type kClient struct {
 	c client.Client
 }
@@ -426,6 +586,16 @@ func (p *kClient) VerifyTokenByRPC(ctx context.Context, Req *auth.VerifyTokenReq
 	_args.Req = Req
 	var _result VerifyTokenByRPCResult
 	if err = p.c.Call(ctx, "VerifyTokenByRPC", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) RenewTokenByRPC(ctx context.Context, Req *auth.RenewTokenReq) (r *auth.DeliveryResp, err error) {
+	var _args RenewTokenByRPCArgs
+	_args.Req = Req
+	var _result RenewTokenByRPCResult
+	if err = p.c.Call(ctx, "RenewTokenByRPC", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil

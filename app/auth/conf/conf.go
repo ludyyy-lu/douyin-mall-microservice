@@ -5,6 +5,7 @@ import (
 	"os"
 	"path/filepath"
 	"sync"
+	"time"
 
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/kr/pretty"
@@ -108,3 +109,9 @@ func LogLevel() klog.Level {
 		return klog.LevelInfo
 	}
 }
+
+// JWTSecret 是用于签名 JWT 的密钥
+const JWTSecret = "your_secret_key"
+
+// JWTExpirationTime 是 JWT 的过期时间
+const JWTExpirationTime = time.Hour * 24

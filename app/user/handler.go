@@ -24,10 +24,17 @@ import (
 // UserServiceImpl implements the last service interface defined in the IDL.
 type UserServiceImpl struct{}
 
+// UserServiceImpl 实现了两个方法：Register 和 Login
+
 // Register implements the UserServiceImpl interface.
+// Register 处理用户注册请求。
+// 它接收一个上下文和一个注册请求，并返回注册响应和可能的错误。
+// `(s *UserServiceImpl)`：这是方法的接收者，表示该方法属于 `UserServiceImpl` 结构体的指针类型。
 func (s *UserServiceImpl) Register(ctx context.Context, req *user.RegisterReq) (resp *user.RegisterResp, err error) {
+	// 创建一个新的注册服务实例，并执行注册逻辑
 	resp, err = service.NewRegisterService(ctx).Run(req)
 
+	// 返回注册响应和错误
 	return resp, err
 }
 
