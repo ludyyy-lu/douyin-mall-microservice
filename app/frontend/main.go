@@ -19,156 +19,130 @@ package main
 import (
 	"context"
 	"os"
-	"time"
 
 	"github.com/All-Done-Right/douyin-mall-microservice/app/frontend/biz/router"
 	"github.com/All-Done-Right/douyin-mall-microservice/app/frontend/conf"
+	"github.com/All-Done-Right/douyin-mall-microservice/app/frontend/infra/mtl"
 	"github.com/All-Done-Right/douyin-mall-microservice/app/frontend/infra/rpc"
 	"github.com/All-Done-Right/douyin-mall-microservice/app/frontend/middleware"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/app/middlewares/server/recovery"
 	"github.com/cloudwego/hertz/pkg/app/server"
-	"github.com/cloudwego/hertz/pkg/common/hlog"
 	"github.com/cloudwego/hertz/pkg/common/utils"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
 	"github.com/hertz-contrib/cors"
 	"github.com/hertz-contrib/gzip"
 	"github.com/hertz-contrib/logger/accesslog"
-	hertzlogrus "github.com/hertz-contrib/logger/logrus"
+	hertzprom "github.com/hertz-contrib/monitor-prometheus"
+	hertzotelprovider "github.com/hertz-contrib/obs-opentelemetry/provider"
+	hertzoteltracing "github.com/hertz-contrib/obs-opentelemetry/tracing"
 	"github.com/hertz-contrib/pprof"
 	"github.com/hertz-contrib/sessions"
 	"github.com/hertz-contrib/sessions/redis"
 	"github.com/joho/godotenv"
-	"go.uber.org/zap/zapcore"
-	"gopkg.in/natefinch/lumberjack.v2"
+	oteltrace "go.opentelemetry.io/otel/trace"
 )
 
-// main 函数是程序的入口点
 func main() {
-	// 加载.env文件中的环境变量
 	_ = godotenv.Load()
 
-	// init dal
-	// 初始化数据访问层（DAL），当前这行代码被注释掉了，如果需要初始化DAL，可以取消注释
-	// dal.Init()
-
-	// 初始化RPC客户端
+	mtl.InitMtl()
 	rpc.InitClient()
-
-	// 从配置文件中获取Hertz服务器的监听地址
 	address := conf.GetConf().Hertz.Address
 
-	// 创建一个新的Hertz服务器实例，并指定监听地址
-	h := server.New(server.WithHostPorts(address))
+	p := hertzotelprovider.NewOpenTelemetryProvider(
+		hertzotelprovider.WithSdkTracerProvider(mtl.TracerProvider),
+		hertzotelprovider.WithEnableMetrics(false),
+	)
+	defer p.Shutdown(context.Background())
+	tracer, cfg := hertzoteltracing.NewServerTracer(hertzoteltracing.WithCustomResponseHandler(func(ctx context.Context, c *app.RequestContext) {
+		c.Header("shop-trace-id", oteltrace.SpanFromContext(ctx).SpanContext().TraceID().String())
+	}))
 
-	// 注册中间件到Hertz服务器
+	h := server.New(server.WithHostPorts(address), server.WithTracer(
+		hertzprom.NewServerTracer(
+			"",
+			"",
+			hertzprom.WithRegistry(mtl.Registry),
+			hertzprom.WithDisableServer(true),
+		),
+	),
+		tracer,
+	)
+	h.LoadHTMLGlob("template/*")
+	h.Delims("{{", "}}")
+
+	h.Use(hertzoteltracing.ServerMiddleware(cfg))
 	registerMiddleware(h)
 
-	// 添加一个ping路由，用于测试服务器是否正常运行
-	// 当客户端访问 /ping 路径时，服务器将返回一个JSON响应，内容为 {"ping": "pong"}
+	// add a ping route to test
 	h.GET("/ping", func(c context.Context, ctx *app.RequestContext) {
 		ctx.JSON(consts.StatusOK, utils.H{"ping": "pong"})
 	})
 
-	// 注册生成的路由
 	router.GeneratedRegister(h)
 
-	// 加载模板文件，支持使用 glob 模式匹配模板文件
-	h.LoadHTMLGlob("template/*")
+	h.GET("sign-in", func(ctx context.Context, c *app.RequestContext) {
+		c.HTML(consts.StatusOK, "sign-in", utils.H{
+			"title": "Sign in",
+			"next":  c.Query("next"),
+		})
+	})
+	h.GET("sign-up", func(ctx context.Context, c *app.RequestContext) {
+		c.HTML(consts.StatusOK, "sign-up", utils.H{
+			"title": "Sign up",
+		})
+	})
+	h.GET("/redirect", func(ctx context.Context, c *app.RequestContext) {
+		c.HTML(consts.StatusOK, "about", utils.H{
+			"title": "Error",
+		})
+	})
+	if os.Getenv("GO_ENV") != "online" {
+		h.GET("/robots.txt", func(ctx context.Context, c *app.RequestContext) {
+			c.Data(consts.StatusOK, "text/plain", []byte(`User-agent: *
+Disallow: /`))
+		})
+	}
 
-	// 静态文件服务，将 /static 路径映射到当前目录
 	h.Static("/static", "./")
 
-	// 定义 /about 路由，当客户端访问该路径时，返回一个HTML页面
-	// 页面模板为 "about"，并传递一个包含标题的上下文数据
-	h.GET("/about", func(c context.Context, ctx *app.RequestContext) {
-		ctx.HTML(consts.StatusOK, "about", utils.H{"title": "About"})
-	})
-
-	// 定义 /sign-in 路由，当客户端访问该路径时，返回一个登录页面
-	// 页面模板为 "sign-in"，并传递包含标题和 next 参数的上下文数据
-	h.GET("/sign-in", func(c context.Context, ctx *app.RequestContext) {
-		data := utils.H{
-			"title": "Sign In",
-			"next":  ctx.Query("next"),
-		}
-		ctx.HTML(consts.StatusOK, "sign-in", data)
-	})
-
-	// 定义 /sign-up 路由，当客户端访问该路径时，返回一个注册页面
-	// 页面模板为 "sign-up"，并传递一个包含标题的上下文数据
-	h.GET("/sign-up", func(c context.Context, ctx *app.RequestContext) {
-		ctx.HTML(consts.StatusOK, "sign-up", utils.H{"title": "Sign Up"})
-	})
-
-	// 启动Hertz服务器，开始监听请求
 	h.Spin()
 }
 
-// registerMiddleware 函数用于注册各种中间件到Hertz服务器
 func registerMiddleware(h *server.Hertz) {
-	// 创建一个Redis会话存储实例
-	// 10 表示最大空闲连接数，"tcp" 表示网络协议，后面依次是Redis地址、密码和会话密钥
-	store, err := redis.NewStore(10, "tcp", conf.GetConf().Redis.Address, "", []byte(os.Getenv("SESSION_SECRET")))
-	if err != nil {
-		// 如果创建Redis存储实例失败，程序将抛出恐慌并终止
-		panic(err)
-	}
-
-	// 使用会话中间件，会话名称为 "cloudwego-shop"
-	h.Use(sessions.New("cloudwego-shop", store))
-
-	// 日志配置
-	// 创建一个基于logrus的Hertz日志记录器
-	logger := hertzlogrus.NewLogger()
-	// 设置Hertz的日志记录器
-	hlog.SetLogger(logger)
-	// 设置日志级别，根据配置文件中的日志级别进行设置
-	hlog.SetLevel(conf.LogLevel())
-
-	// 创建一个异步日志写入器
-	asyncWriter := &zapcore.BufferedWriteSyncer{
-		// 使用lumberjack进行日志文件的切割和管理
-		WS: zapcore.AddSync(&lumberjack.Logger{
-			Filename:   conf.GetConf().Hertz.LogFileName,   // 日志文件名称
-			MaxSize:    conf.GetConf().Hertz.LogMaxSize,    // 日志文件最大大小（MB）
-			MaxBackups: conf.GetConf().Hertz.LogMaxBackups, // 最大备份文件数量
-			MaxAge:     conf.GetConf().Hertz.LogMaxAge,     // 日志文件最大保留天数
-		}),
-		FlushInterval: time.Minute, // 刷新间隔为1分钟
-	}
-	// 设置日志输出到异步写入器
-	hlog.SetOutput(asyncWriter)
-
-	// 服务器关闭时的回调函数，确保异步写入器中的数据同步到磁盘
-	h.OnShutdown = append(h.OnShutdown, func(ctx context.Context) {
-		asyncWriter.Sync()
-	})
-
-	// pprof 配置
-	// 如果配置文件中启用了pprof，则注册pprof中间件
+	// pprof
 	if conf.GetConf().Hertz.EnablePprof {
 		pprof.Register(h)
 	}
 
-	// gzip 配置
-	// 如果配置文件中启用了gzip，则使用gzip中间件进行响应压缩
+	store, err := redis.NewStore(100, "tcp", conf.GetConf().Redis.Address, "", []byte(os.Getenv("SESSION_SECRET")))
+	if err != nil {
+		panic(err)
+	}
+	store.Options(sessions.Options{MaxAge: 86400, Path: "/"})
+	rs, err := redis.GetRedisStore(store)
+	if err == nil {
+		rs.SetSerializer(sessions.JSONSerializer{})
+	}
+	h.Use(sessions.New("cloudwego-shop", store))
+
+	// gzip
 	if conf.GetConf().Hertz.EnableGzip {
 		h.Use(gzip.Gzip(gzip.DefaultCompression))
 	}
 
-	// 访问日志配置
-	// 如果配置文件中启用了访问日志，则使用访问日志中间件
+	// access log
 	if conf.GetConf().Hertz.EnableAccessLog {
 		h.Use(accesslog.New())
 	}
 
-	// 恢复中间件，用于捕获并处理未处理的异常
+	// recovery
 	h.Use(recovery.Recovery())
 
-	// CORS（跨域资源共享）配置，使用默认的CORS中间件
-	h.Use(cors.Default())
+	h.OnShutdown = append(h.OnShutdown, mtl.Hooks...)
 
-	// 注册自定义中间件
-	middleware.Register(h)
+	// cores
+	h.Use(cors.Default())
+	middleware.RegisterMiddleware(h)
 }

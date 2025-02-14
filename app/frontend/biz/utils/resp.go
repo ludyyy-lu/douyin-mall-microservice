@@ -17,7 +17,10 @@ package utils
 import (
 	"context"
 
-	frontendUtils "github.com/All-Done-Right/douyin-mall-microservice/app/frontend/utils"
+	"github.com/All-Done-Right/douyin-mall-microservice/app/frontend/infra/rpc"
+	frontendutils "github.com/All-Done-Right/douyin-mall-microservice/app/frontend/utils"
+	"github.com/All-Done-Right/douyin-mall-microservice/rpc_gen/kitex_gen/cart"
+
 	"github.com/cloudwego/hertz/pkg/app"
 )
 
@@ -34,6 +37,13 @@ func SendSuccessResponse(ctx context.Context, c *app.RequestContext, code int, d
 }
 
 func WarpResponse(ctx context.Context, c *app.RequestContext, content map[string]any) map[string]any {
-	content["user_id"] = frontendUtils.GetUserIdFromCtx(ctx)
+	var cartNum int
+	userId := frontendutils.GetUserIdFromCtx(ctx)
+	cartResp, _ := rpc.CartClient.GetCart(ctx, &cart.GetCartReq{UserId: userId})
+	if cartResp != nil && cartResp.Cart != nil {
+		cartNum = len(cartResp.Cart.Items)
+	}
+	content["user_id"] = ctx.Value(frontendutils.UserIdKey)
+	content["cart_num"] = cartNum
 	return content
 }

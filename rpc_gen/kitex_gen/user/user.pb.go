@@ -28,7 +28,7 @@ type RegisterReq struct {
 
 	Email           string `protobuf:"bytes,1,opt,name=email,proto3" json:"email,omitempty"`
 	Password        string `protobuf:"bytes,2,opt,name=password,proto3" json:"password,omitempty"`
-	PasswordConfirm string `protobuf:"bytes,3,opt,name=password_confirm,json=passwordConfirm,proto3" json:"password_confirm,omitempty"`
+	ConfirmPassword string `protobuf:"bytes,3,opt,name=confirm_password,json=ConfirmPassword,proto3" json:"confirm_password,omitempty"`
 }
 
 func (x *RegisterReq) Reset() {
@@ -77,9 +77,9 @@ func (x *RegisterReq) GetPassword() string {
 	return ""
 }
 
-func (x *RegisterReq) GetPasswordConfirm() string {
+func (x *RegisterReq) GetConfirmPassword() string {
 	if x != nil {
-		return x.PasswordConfirm
+		return x.ConfirmPassword
 	}
 	return ""
 }

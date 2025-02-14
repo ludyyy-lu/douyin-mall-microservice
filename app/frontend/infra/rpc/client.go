@@ -15,54 +15,103 @@
 package rpc
 
 import (
-	"github.com/cloudwego/kitex/pkg/discovery"
-	"log"
+	"context"
 	"sync"
 
 	"github.com/All-Done-Right/douyin-mall-microservice/app/frontend/conf"
-	frontendUtils "github.com/All-Done-Right/douyin-mall-microservice/app/frontend/utils"
-	"github.com/All-Done-Right/douyin-mall-microservice/rpc_gen/kitex_gen/auth/authservice"
+	"github.com/All-Done-Right/douyin-mall-microservice/app/frontend/infra/mtl"
+	frontendutils "github.com/All-Done-Right/douyin-mall-microservice/app/frontend/utils"
+	"github.com/All-Done-Right/douyin-mall-microservice/common/clientsuite"
+	"github.com/All-Done-Right/douyin-mall-microservice/rpc_gen/kitex_gen/cart/cartservice"
+	"github.com/All-Done-Right/douyin-mall-microservice/rpc_gen/kitex_gen/checkout/checkoutservice"
+	"github.com/All-Done-Right/douyin-mall-microservice/rpc_gen/kitex_gen/order/orderservice"
+	"github.com/All-Done-Right/douyin-mall-microservice/rpc_gen/kitex_gen/product"
+	"github.com/All-Done-Right/douyin-mall-microservice/rpc_gen/kitex_gen/product/productcatalogservice"
 	"github.com/All-Done-Right/douyin-mall-microservice/rpc_gen/kitex_gen/user/userservice"
 	"github.com/cloudwego/kitex/client"
-	consul "github.com/kitex-contrib/registry-consul"
+	"github.com/cloudwego/kitex/pkg/circuitbreak"
+	"github.com/cloudwego/kitex/pkg/fallback"
+	"github.com/cloudwego/kitex/pkg/rpcinfo"
+	prometheus "github.com/kitex-contrib/monitor-prometheus"
 )
 
 var (
-	UserClient userservice.Client
-	AuthClient authservice.Client
-
-	once sync.Once
+	ProductClient  productcatalogservice.Client
+	UserClient     userservice.Client
+	CartClient     cartservice.Client
+	CheckoutClient checkoutservice.Client
+	OrderClient    orderservice.Client
+	once           sync.Once
+	err            error
+	registryAddr   string
+	commonSuite    client.Option
 )
-
-// getConsulResolver 创建并返回一个 Consul 解析器
-func getConsulResolver() (discovery.Resolver, error) {
-	registryAddr := conf.GetConf().Hertz.RegistryAddr
-	r, err := consul.NewConsulResolver(registryAddr)
-	if err != nil {
-		log.Printf("Failed to create Consul resolver: %v", err)
-		return nil, err
-	}
-	return r, nil
-}
 
 func InitClient() {
 	once.Do(func() {
+		registryAddr = conf.GetConf().Hertz.RegistryAddr
+		commonSuite = client.WithSuite(clientsuite.CommonGrpcClientSuite{
+			RegistryAddr:       registryAddr,
+			CurrentServiceName: frontendutils.ServiceName,
+		})
+		initProductClient()
 		initUserClient()
-		initAuthClient()
+		initCartClient()
+		initCheckoutClient()
+		initOrderClient()
 	})
 }
 
-func initUserClient() {
-	r, err := consul.NewConsulResolver(conf.GetConf().Hertz.RegistryAddr)
-	//r, err := getConsulResolver()
-	frontendUtils.MustHandleError(err)
-	UserClient, err = userservice.NewClient("user", client.WithResolver(r))
-	frontendUtils.MustHandleError(err)
+func initProductClient() {
+	var opts []client.Option
+
+	cbs := circuitbreak.NewCBSuite(func(ri rpcinfo.RPCInfo) string {
+		return circuitbreak.RPCInfo2Key(ri)
+	})
+	cbs.UpdateServiceCBConfig("shop-frontend/product/GetProduct", circuitbreak.CBConfig{Enable: true, ErrRate: 0.5, MinSample: 2})
+
+	opts = append(opts, commonSuite, client.WithCircuitBreaker(cbs), client.WithFallback(fallback.NewFallbackPolicy(fallback.UnwrapHelper(func(ctx context.Context, req, resp interface{}, err error) (fbResp interface{}, fbErr error) {
+		methodName := rpcinfo.GetRPCInfo(ctx).To().Method()
+		if err == nil {
+			return resp, err
+		}
+		if methodName != "ListProducts" {
+			return resp, err
+		}
+		return &product.ListProductsResp{
+			Products: []*product.Product{
+				{
+					Price:       6.6,
+					Id:          3,
+					Picture:     "/static/image/t-shirt.jpeg",
+					Name:        "T-Shirt",
+					Description: "CloudWeGo T-Shirt",
+				},
+			},
+		}, nil
+	}))))
+	opts = append(opts, client.WithTracer(prometheus.NewClientTracer("", "", prometheus.WithDisableServer(true), prometheus.WithRegistry(mtl.Registry))))
+
+	ProductClient, err = productcatalogservice.NewClient("product", opts...)
+	frontendutils.MustHandleError(err)
 }
 
-func initAuthClient() {
-	r, err := consul.NewConsulResolver(conf.GetConf().Hertz.RegistryAddr)
-	frontendUtils.MustHandleError(err)
-	AuthClient, err = authservice.NewClient("auth", client.WithResolver(r))
-	frontendUtils.MustHandleError(err)
+func initUserClient() {
+	UserClient, err = userservice.NewClient("user", commonSuite)
+	frontendutils.MustHandleError(err)
+}
+
+func initCartClient() {
+	CartClient, err = cartservice.NewClient("cart", commonSuite)
+	frontendutils.MustHandleError(err)
+}
+
+func initCheckoutClient() {
+	CheckoutClient, err = checkoutservice.NewClient("checkout", commonSuite)
+	frontendutils.MustHandleError(err)
+}
+
+func initOrderClient() {
+	OrderClient, err = orderservice.NewClient("order", commonSuite)
+	frontendutils.MustHandleError(err)
 }

@@ -16,12 +16,11 @@ package service
 
 import (
 	"context"
-	"fmt"
 
 	auth "github.com/All-Done-Right/douyin-mall-microservice/app/frontend/hertz_gen/frontend/auth"
 	"github.com/All-Done-Right/douyin-mall-microservice/app/frontend/infra/rpc"
-	authcenter "github.com/All-Done-Right/douyin-mall-microservice/rpc_gen/kitex_gen/auth"
-	user "github.com/All-Done-Right/douyin-mall-microservice/rpc_gen/kitex_gen/user"
+	frontendutils "github.com/All-Done-Right/douyin-mall-microservice/app/frontend/utils"
+	rpcuser "github.com/All-Done-Right/douyin-mall-microservice/rpc_gen/kitex_gen/user"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/hertz-contrib/sessions"
 )
@@ -35,43 +34,23 @@ func NewLoginService(Context context.Context, RequestContext *app.RequestContext
 	return &LoginService{RequestContext: RequestContext, Context: Context}
 }
 
-func (h *LoginService) Run(req *auth.LoginReq) (redirect string, token string, err error) {
-	//defer func() {
-	// hlog.CtxInfof(h.Context, "req = %+v", req)
-	// hlog.CtxInfof(h.Context, "resp = %+v", resp)
-	//}()
-	// 通过此客户端 访问 user服务的服务端
-	resp, err := rpc.UserClient.Login(h.Context, &user.LoginReq{
-		Email:    req.Email,
-		Password: req.Password,
-	})
+func (h *LoginService) Run(req *auth.LoginReq) (resp string, err error) {
+	res, err := rpc.UserClient.Login(h.Context, &rpcuser.LoginReq{Email: req.Email, Password: req.Password})
 	if err != nil {
-		return "", "", err
-	}
-
-	tokenReq := &authcenter.DeliverTokenReq{
-		UserId: resp.UserId,
-	}
-	// 通过此客户端 访问 认证服务 的服务端
-	fmt.Println("启动分发token")
-
-	tokenResp, err := rpc.AuthClient.DeliverTokenByRPC(h.Context, tokenReq)
-	fmt.Println(tokenResp)
-	fmt.Println(err)
-	if err != nil {
-		return "", "", err
+		return
 	}
 
 	session := sessions.Default(h.RequestContext)
-	session.Set("user_id", resp.UserId)
+	session.Set("user_id", res.UserId)
 	err = session.Save()
-	if err != nil {
-		return "", "", err
-	}
-	redirect = "/"
-	if req.Next != "" {
+	frontendutils.MustHandleError(err)
+	redirect := "/"
+	if frontendutils.ValidateNext(req.Next) {
 		redirect = req.Next
 	}
+	if err != nil {
+		return "", err
+	}
 
-	return redirect, tokenResp.Token, nil
+	return redirect, nil
 }

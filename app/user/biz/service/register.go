@@ -34,10 +34,10 @@ func NewRegisterService(ctx context.Context) *RegisterService {
 // Run create note info
 func (s *RegisterService) Run(req *user.RegisterReq) (resp *user.RegisterResp, err error) {
 	// Finish your business logic.
-	if req.Email == "" || req.Password == "" || req.PasswordConfirm == "" {
+	if req.Email == "" || req.Password == "" || req.ConfirmPassword == "" {
 		return nil, errors.New("email or password is empty")
 	}
-	if req.Password != req.PasswordConfirm {
+	if req.Password != req.ConfirmPassword {
 		return nil, errors.New("password not match")
 	}
 	passwordHashed, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)

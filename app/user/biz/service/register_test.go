@@ -38,7 +38,7 @@ func TestRegister_Run(t *testing.T) {
 	req := &user.RegisterReq{
 		Email:           "demo@damin.com",
 		Password:        "FJODIAFUFJO",
-		PasswordConfirm: "FJODIAFUFJO",
+		ConfirmPassword: "FJODIAFUFJO",
 	}
 	resp, err := s.Run(req)
 	t.Logf("err: %v", err)
