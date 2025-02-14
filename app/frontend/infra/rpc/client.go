@@ -22,6 +22,7 @@ import (
 	"github.com/All-Done-Right/douyin-mall-microservice/app/frontend/infra/mtl"
 	frontendutils "github.com/All-Done-Right/douyin-mall-microservice/app/frontend/utils"
 	"github.com/All-Done-Right/douyin-mall-microservice/common/clientsuite"
+	"github.com/All-Done-Right/douyin-mall-microservice/rpc_gen/kitex_gen/auth/authservice"
 	"github.com/All-Done-Right/douyin-mall-microservice/rpc_gen/kitex_gen/cart/cartservice"
 	"github.com/All-Done-Right/douyin-mall-microservice/rpc_gen/kitex_gen/checkout/checkoutservice"
 	"github.com/All-Done-Right/douyin-mall-microservice/rpc_gen/kitex_gen/order/orderservice"
@@ -36,6 +37,7 @@ import (
 )
 
 var (
+	AuthClient     authservice.Client
 	ProductClient  productcatalogservice.Client
 	UserClient     userservice.Client
 	CartClient     cartservice.Client
@@ -54,6 +56,7 @@ func InitClient() {
 			RegistryAddr:       registryAddr,
 			CurrentServiceName: frontendutils.ServiceName,
 		})
+		initAuthClient()
 		initProductClient()
 		initUserClient()
 		initCartClient()
@@ -93,6 +96,11 @@ func initProductClient() {
 	opts = append(opts, client.WithTracer(prometheus.NewClientTracer("", "", prometheus.WithDisableServer(true), prometheus.WithRegistry(mtl.Registry))))
 
 	ProductClient, err = productcatalogservice.NewClient("product", opts...)
+	frontendutils.MustHandleError(err)
+}
+
+func initAuthClient() {
+	AuthClient, err = authservice.NewClient("auth", commonSuite)
 	frontendutils.MustHandleError(err)
 }
 

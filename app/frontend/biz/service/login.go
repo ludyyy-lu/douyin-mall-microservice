@@ -34,7 +34,7 @@ func NewLoginService(Context context.Context, RequestContext *app.RequestContext
 	return &LoginService{RequestContext: RequestContext, Context: Context}
 }
 
-func (h *LoginService) Run(req *auth.LoginReq) (resp string, err error) {
+func (h *LoginService) Run(req *auth.LoginReq) (resp string, userId int32, err error) {
 	res, err := rpc.UserClient.Login(h.Context, &rpcuser.LoginReq{Email: req.Email, Password: req.Password})
 	if err != nil {
 		return
@@ -48,9 +48,6 @@ func (h *LoginService) Run(req *auth.LoginReq) (resp string, err error) {
 	if frontendutils.ValidateNext(req.Next) {
 		redirect = req.Next
 	}
-	if err != nil {
-		return "", err
-	}
 
-	return redirect, nil
+	return redirect, res.UserId, nil
 }

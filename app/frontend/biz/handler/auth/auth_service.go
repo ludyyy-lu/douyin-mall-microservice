@@ -16,11 +16,13 @@ package auth
 
 import (
 	"context"
-
+	"fmt"
 	"github.com/All-Done-Right/douyin-mall-microservice/app/frontend/biz/service"
 	"github.com/All-Done-Right/douyin-mall-microservice/app/frontend/biz/utils"
 	auth "github.com/All-Done-Right/douyin-mall-microservice/app/frontend/hertz_gen/frontend/auth"
 	common "github.com/All-Done-Right/douyin-mall-microservice/app/frontend/hertz_gen/frontend/common"
+	"github.com/All-Done-Right/douyin-mall-microservice/app/frontend/infra/rpc"
+	authcenter "github.com/All-Done-Right/douyin-mall-microservice/rpc_gen/kitex_gen/auth"
 	"github.com/cloudwego/hertz/pkg/app"
 	hertzUtils "github.com/cloudwego/hertz/pkg/common/utils"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
@@ -56,13 +58,27 @@ func Login(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 
-	resp, err := service.NewLoginService(ctx, c).Run(&req)
+	redirect, userid, err := service.NewLoginService(ctx, c).Run(&req)
 	if err != nil {
 		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
 		return
 	}
 
-	c.Redirect(consts.StatusFound, []byte(resp))
+	tokenReq := &authcenter.DeliverTokenReq{
+		UserId: userid,
+	}
+	// 通过此客户端 访问 认证服务 的服务端
+	fmt.Println("启动分发token")
+
+	tokenResp, err := rpc.AuthClient.DeliverTokenByRPC(ctx, tokenReq)
+	if err != nil {
+		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
+		return
+	}
+	// 将 token 存储在 cookie 中
+	c.SetCookie("jwt_token", tokenResp.Token, 86400, "", "", 0, true, false)
+
+	c.Redirect(consts.StatusFound, []byte(redirect))
 }
 
 // Logout .

@@ -17,9 +17,12 @@ package middleware
 import (
 	"context"
 	"fmt"
-
+	"github.com/All-Done-Right/douyin-mall-microservice/app/auth/biz/service"
 	"github.com/All-Done-Right/douyin-mall-microservice/app/frontend/utils"
+	"github.com/All-Done-Right/douyin-mall-microservice/rpc_gen/kitex_gen/auth"
 	"github.com/cloudwego/hertz/pkg/app"
+	"github.com/cloudwego/hertz/pkg/protocol/consts"
+	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/hertz-contrib/sessions"
 )
 
@@ -55,6 +58,37 @@ func Auth() app.HandlerFunc {
 			return
 		}
 		ctx = context.WithValue(ctx, utils.UserIdKey, userId)
+		c.Next(ctx)
+	}
+}
+
+// 统一鉴权中间件
+func JWTAuth() app.HandlerFunc {
+	return func(ctx context.Context, c *app.RequestContext) {
+		// 从请求头中获取 token
+		//fmt.Printf("使用中间件进行jwt鉴权")
+		klog.Info("使用中间件进行jwt鉴权")
+		tokenString := string(c.Cookie("jwt_token"))
+
+		if tokenString == "" {
+			klog.Info("获取token失败")
+			c.Redirect(consts.StatusFound, []byte("/sign-in?next="+c.FullPath()))
+			c.Abort()
+			return
+		}
+
+		// 调用 VerifyTokenByRPC 方法验证 token
+		verifyReq := &auth.VerifyTokenReq{
+			Token: tokenString,
+		}
+		verifyResp, err := service.NewVerifyTokenByRPCService(ctx).Run(verifyReq)
+		if err != nil || !verifyResp.Res {
+			klog.Info("jwt鉴权失败")
+			c.Redirect(consts.StatusFound, []byte("/sign-in?next="+c.FullPath()))
+			c.Abort()
+			return
+		}
+
 		c.Next(ctx)
 	}
 }

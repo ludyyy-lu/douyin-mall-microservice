@@ -17,12 +17,14 @@
 package home
 
 import (
+	"github.com/All-Done-Right/douyin-mall-microservice/app/frontend/middleware"
 	"github.com/cloudwego/hertz/pkg/app"
 )
 
 func rootMw() []app.HandlerFunc {
 	// your code...
-	return nil
+	//return nil
+	return []app.HandlerFunc{middleware.JWTAuth(), middleware.Auth()}
 }
 
 func _homeMw() []app.HandlerFunc {
