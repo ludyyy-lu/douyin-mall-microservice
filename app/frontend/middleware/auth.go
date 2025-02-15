@@ -17,7 +17,7 @@ package middleware
 import (
 	"context"
 	"fmt"
-	"github.com/All-Done-Right/douyin-mall-microservice/app/auth/biz/service"
+	"github.com/All-Done-Right/douyin-mall-microservice/app/frontend/infra/rpc"
 	"github.com/All-Done-Right/douyin-mall-microservice/app/frontend/utils"
 	"github.com/All-Done-Right/douyin-mall-microservice/rpc_gen/kitex_gen/auth"
 	"github.com/cloudwego/hertz/pkg/app"
@@ -65,8 +65,7 @@ func Auth() app.HandlerFunc {
 // 统一鉴权中间件
 func JWTAuth() app.HandlerFunc {
 	return func(ctx context.Context, c *app.RequestContext) {
-		// 从请求头中获取 token
-		//fmt.Printf("使用中间件进行jwt鉴权")
+		// 从cookie中获取 token
 		klog.Info("使用中间件进行jwt鉴权")
 		tokenString := string(c.Cookie("jwt_token"))
 
@@ -81,13 +80,15 @@ func JWTAuth() app.HandlerFunc {
 		verifyReq := &auth.VerifyTokenReq{
 			Token: tokenString,
 		}
-		verifyResp, err := service.NewVerifyTokenByRPCService(ctx).Run(verifyReq)
+		verifyResp, err := rpc.AuthClient.VerifyTokenByRPC(ctx, verifyReq) // 调用rpc服务进行鉴权
+		//verifyResp, err := service.NewVerifyTokenByRPCService(ctx).Run(verifyReq)
 		if err != nil || !verifyResp.Res {
 			klog.Info("jwt鉴权失败")
 			c.Redirect(consts.StatusFound, []byte("/sign-in?next="+c.FullPath()))
 			c.Abort()
 			return
 		}
+		klog.Info(verifyResp.String()) // 鉴权成功打印res:true
 
 		c.Next(ctx)
 	}
