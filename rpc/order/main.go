@@ -8,6 +8,7 @@ import (
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
 	"github.com/cloudwego/kitex/server"
 	etcd "github.com/kitex-contrib/registry-etcd"
+	"github.com/sirupsen/logrus"
 	"log"
 	"net"
 )
@@ -20,7 +21,11 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	addr, _ := net.ResolveTCPAddr("tcp", global.Config.ServiceInfo.Addr())
+	logrus.Infoln(r)
+	addr, err := net.ResolveTCPAddr("tcp", global.Config.ServiceInfo.Addr())
+	if err != nil {
+		logrus.Fatal(err)
+	}
 	svr := order.NewServer(new(OrderServiceImpl),
 		server.WithServiceAddr(addr),
 		//指定 Registry 与服务基本信息
