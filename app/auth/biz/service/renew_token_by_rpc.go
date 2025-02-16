@@ -23,7 +23,6 @@ func NewRenewTokenByRPCService(ctx context.Context) *RenewTokenByRPCService {
 func (s *RenewTokenByRPCService) Run(req *auth.RenewTokenReq) (resp *auth.DeliveryResp, err error) {
 	// Finish your business logic.
 	// 1. 从请求中获取旧的 Token
-	// 1. 从请求中获取旧的 Token
 	oldTokenStr := req.OldToken
 	if oldTokenStr == "" {
 		return nil, errors.New("missing token in request")
