@@ -1,6 +1,8 @@
 module github.com/All-Done-Right/douyin-mall-microservice/app/frontend
 
-go 1.23.2
+go 1.21.5
+
+toolchain go1.23.6
 
 replace (
 	github.com/All-Done-Right/douyin-mall-microservice/app/auth => ../../app/auth
@@ -10,7 +12,6 @@ replace (
 )
 
 require (
-	github.com/All-Done-Right/douyin-mall-microservice/app/auth v0.0.0-00010101000000-000000000000
 	github.com/All-Done-Right/douyin-mall-microservice/common v0.0.0-00010101000000-000000000000
 	github.com/All-Done-Right/douyin-mall-microservice/rpc_gen v0.0.0-00010101000000-000000000000
 	github.com/cloudwego/hertz v0.7.3
@@ -74,7 +75,6 @@ require (
 	github.com/go-logr/logr v1.4.1 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-sql-driver/mysql v1.7.1 // indirect
-	github.com/golang-jwt/jwt/v4 v4.5.1 // indirect
 	github.com/golang/protobuf v1.5.4 // indirect
 	github.com/gomodule/redigo v1.8.9 // indirect
 	github.com/google/pprof v0.0.0-20240727154555-813a5fbdbec8 // indirect
