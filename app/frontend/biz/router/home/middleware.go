@@ -24,7 +24,7 @@ import (
 func rootMw() []app.HandlerFunc {
 	// your code...
 	//return nil
-	return []app.HandlerFunc{middleware.JWTAuth(), middleware.Auth()}
+	return []app.HandlerFunc{middleware.Auth()}
 }
 
 func _homeMw() []app.HandlerFunc {
