@@ -6,6 +6,7 @@ require (
 	github.com/Mmx233/EnvConfig v0.0.2
 	github.com/cloudwego/fastpb v0.0.5
 	github.com/cloudwego/kitex v0.12.1
+	github.com/google/uuid v1.3.1
 	github.com/kitex-contrib/registry-etcd v0.2.5
 	github.com/pelletier/go-toml v1.9.5
 	github.com/sirupsen/logrus v1.9.2

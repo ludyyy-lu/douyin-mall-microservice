@@ -1,4 +1,4 @@
-package repository
+package model
 
 import (
 	"gorm.io/gorm"
@@ -17,10 +17,11 @@ type Order struct {
 
 // OrderItem 订单项
 type OrderItem struct {
-	ID      uint32
-	OrderID string  `gorm:"type:varchar(100)"`
-	ItemID  uint32  `gorm:"column:item_id"`
-	Cost    float32 `gorm:"column:cost"`
+	gorm.Model
+	OrderID   string  `gorm:"type:varchar(100)"`
+	ProductID uint32  `gorm:"type:int(11)"`
+	Quantity  int32   `gorm:"type:int(11)"`
+	Cost      float32 `gorm:"type:decimal(10,2)"`
 }
 
 // Address 订单地址
