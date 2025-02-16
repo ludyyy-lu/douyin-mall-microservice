@@ -3,7 +3,9 @@ package main
 import (
 	"context"
 	"douyin-mall/rpc/order/internal/global"
+	"douyin-mall/rpc/order/internal/repository"
 	"douyin-mall/rpc/order/internal/repository/model"
+	"douyin-mall/rpc/order/kitex_gen/cart"
 	"douyin-mall/rpc/order/kitex_gen/order"
 	"errors"
 	"github.com/google/uuid"
@@ -58,8 +60,46 @@ func (s *OrderServiceImpl) PlaceOrder(ctx context.Context, req *order.PlaceOrder
 
 // ListOrder implements the OrderServiceImpl interface.
 func (s *OrderServiceImpl) ListOrder(ctx context.Context, req *order.ListOrderReq) (resp *order.ListOrderResp, err error) {
-	// TODO: Your code here...
-	return
+	userID := req.GetUserId()
+	orderDB := repository.NewOrderRepo(global.DB)
+	orders, err := orderDB.ListOrders(userID)
+	if err != nil {
+		logrus.Errorln("list order failed")
+		return nil, errors.New("list order failed")
+	}
+	logrus.Debugln(orders)
+	resp = &order.ListOrderResp{
+		Orders: make([]*order.Order, 0),
+	}
+	for _, orderData := range orders {
+		orderItems := make([]*order.OrderItem, 0)
+		for _, item := range orderData.OrderItems {
+			orderItems = append(orderItems, &order.OrderItem{
+				Cost: item.Cost,
+				Item: &cart.CartItem{
+					ProductId: item.ProductID,
+					Quantity:  item.Quantity,
+				},
+			})
+		}
+		resp.Orders = append(resp.Orders, &order.Order{
+			OrderId:      orderData.OrderID,
+			UserId:       orderData.UserID,
+			UserCurrency: orderData.UserCurrency,
+			Email:        orderData.Email,
+			Address: &order.Address{
+				StreetAddress: orderData.Address.StreetAddress,
+				City:          orderData.Address.City,
+				State:         orderData.Address.State,
+				Country:       orderData.Address.Country,
+				ZipCode:       orderData.Address.ZipCode,
+			},
+			OrderItems: orderItems,
+		})
+
+	}
+
+	return resp, nil
 }
 
 // MarkOrderPaid implements the OrderServiceImpl interface.

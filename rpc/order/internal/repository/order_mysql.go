@@ -19,5 +19,12 @@ func (r *OrderRepo) CreateOrder(order model.Order) (string, error) {
 		return "", r.Error
 	}
 	return order.OrderID, nil
+}
+func (r *OrderRepo) ListOrders(UserID uint32) ([]*model.Order, error) {
 
+	var orders []*model.Order
+	if err := r.Model(&model.Order{}).Where("user_id = ?", UserID).Preload("OrderItems").Find(&orders).Error; err != nil {
+		return nil, err
+	}
+	return orders, nil
 }
