@@ -8,6 +8,7 @@ import (
 type Config struct {
 	Mysql Mysql
 	Etcd  Etcd
+	Redis Redis
 }
 
 func (c *Config) Init() {
