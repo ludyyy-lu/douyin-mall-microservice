@@ -1,7 +1,7 @@
 package core
 
 import (
-	"douyin-mall/app/order/internal/global"
+	"github.com/All-Done-Right/douyin-mall-microservice/app/order/biz/global"
 	"github.com/Mmx233/EnvConfig"
 )
 

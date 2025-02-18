@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"douyin-mall/app/order/internal/repository/model"
+	"github.com/All-Done-Right/douyin-mall-microservice/app/order/biz/repository/model"
 	"gorm.io/gorm"
 )
 

@@ -2,7 +2,7 @@ package core
 
 import (
 	"context"
-	"douyin-mall/app/order/internal/global"
+	"github.com/All-Done-Right/douyin-mall-microservice/app/order/biz/global"
 	"github.com/redis/go-redis/v9"
 	"github.com/sirupsen/logrus"
 )
