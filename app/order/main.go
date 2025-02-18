@@ -1,33 +1,35 @@
 package main
 
 import (
-	core2 "douyin-mall/app/order/internal/core"
-	"douyin-mall/app/order/internal/global"
-	order "douyin-mall/app/order/kitex_gen/order/orderservice"
 	"fmt"
+	"github.com/All-Done-Right/douyin-mall-microservice/app/order/biz/core"
+	"github.com/All-Done-Right/douyin-mall-microservice/app/order/biz/global"
+	"github.com/All-Done-Right/douyin-mall-microservice/rpc_gen/kitex_gen/order/orderservice"
+	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
 	"github.com/cloudwego/kitex/server"
-	etcd "github.com/kitex-contrib/registry-etcd"
+	consul "github.com/kitex-contrib/registry-consul"
 	"github.com/sirupsen/logrus"
 	"log"
 	"net"
 )
 
 func main() {
-	core2.InitConfig()
+	core.InitConfig()
 	fmt.Println(global.Config)
-	core2.InitMysql()
-	core2.InitRedis()
-	r, err := etcd.NewEtcdRegistry([]string{global.Config.Etcd.Addr()})
+	core.InitMysql()
+	core.InitRedis()
+	r, err := consul.NewConsulRegister(global.Config.Consul.Addr())
 	if err != nil {
-		log.Fatal(err)
+		klog.Fatal(err)
 	}
+
 	logrus.Infoln(r)
-	addr, err := net.ResolveTCPAddr("tcp", global.Config.ServiceInfo.Addr())
+	addr, err := net.ResolveTCPAddr("tcp", ":8889")
 	if err != nil {
 		logrus.Fatal(err)
 	}
-	svr := order.NewServer(new(OrderServiceImpl),
+	svr := orderservice.NewServer(new(OrderServiceImpl),
 		server.WithServiceAddr(addr),
 		//指定 Registry 与服务基本信息
 		server.WithRegistry(r),

@@ -2,12 +2,12 @@ package main
 
 import (
 	"context"
-	"douyin-mall/app/order/internal/global"
-	"douyin-mall/app/order/internal/repository"
-	"douyin-mall/app/order/internal/repository/model"
-	"douyin-mall/app/order/kitex_gen/cart"
-	"douyin-mall/app/order/kitex_gen/order"
 	"errors"
+	"github.com/All-Done-Right/douyin-mall-microservice/app/order/biz/global"
+	"github.com/All-Done-Right/douyin-mall-microservice/app/order/biz/repository"
+	"github.com/All-Done-Right/douyin-mall-microservice/app/order/biz/repository/model"
+	"github.com/All-Done-Right/douyin-mall-microservice/rpc_gen/kitex_gen/cart"
+	"github.com/All-Done-Right/douyin-mall-microservice/rpc_gen/kitex_gen/order"
 	"github.com/google/uuid"
 	"github.com/sirupsen/logrus"
 )
