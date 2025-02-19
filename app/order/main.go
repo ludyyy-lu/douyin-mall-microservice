@@ -1,9 +1,8 @@
 package main
 
 import (
-	"fmt"
-	"github.com/All-Done-Right/douyin-mall-microservice/app/order/biz/core"
-	"github.com/All-Done-Right/douyin-mall-microservice/app/order/biz/global"
+	"github.com/All-Done-Right/douyin-mall-microservice/app/order/core"
+	"github.com/All-Done-Right/douyin-mall-microservice/app/order/global"
 	"github.com/All-Done-Right/douyin-mall-microservice/rpc_gen/kitex_gen/order/orderservice"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
@@ -16,15 +15,15 @@ import (
 
 func main() {
 	core.InitConfig()
-	fmt.Println(global.Config)
-	core.InitMysql()
-	core.InitRedis()
+	core.InitDefaultLogger()
+	logrus.Println(global.Config)
+	core.InitDB()
+	//	global.DB.AutoMigrate(&model.Order{}, &model.OrderItem{})
 	r, err := consul.NewConsulRegister(global.Config.Consul.Addr())
 	if err != nil {
 		klog.Fatal(err)
 	}
 
-	logrus.Infoln(r)
 	addr, err := net.ResolveTCPAddr("tcp", ":8889")
 	if err != nil {
 		logrus.Fatal(err)
