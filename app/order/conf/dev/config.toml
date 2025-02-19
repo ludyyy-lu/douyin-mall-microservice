@@ -1,12 +1,12 @@
 [Mysql]
 Host = "localhost"
 Port = 3306
-User = "root"
-Password = "root"
-Database = "order"
-[Etcd]
+User = "gorm"
+Password = "gorm"
+Database = "gorm"
+[Consul]
 Host = "127.0.0.1"
-Port = 2379
+Port = 8500
 [Redis]
 Host = "127.0.0.1"
 Port = 6379
