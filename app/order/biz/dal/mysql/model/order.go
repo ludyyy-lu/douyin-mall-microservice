@@ -11,17 +11,10 @@ type Order struct {
 	UserID       uint32      `gorm:"type:int(11)"`
 	UserCurrency string      `gorm:"type:varchar(10)"`
 	Email        string      `gorm:"column:email"`
-	OrderItems   []OrderItem `gorm:"foreignKey:OrderID;references:OrderID"`
+	OrderItems   []OrderItem `gorm:"dforeignKey:OrderID;references:OrderID"`
 	Address      Address     `gorm:"embedded"`
-}
-
-// OrderItem 订单项
-type OrderItem struct {
-	gorm.Model
-	OrderID   string  `gorm:"type:varchar(100)"`
-	ProductID uint32  `gorm:"type:int(11)"`
-	Quantity  int32   `gorm:"type:int(11)"`
-	Cost      float32 `gorm:"type:decimal(10,2)"`
+	Paid         bool
+	Expired      bool
 }
 
 // Address 订单地址

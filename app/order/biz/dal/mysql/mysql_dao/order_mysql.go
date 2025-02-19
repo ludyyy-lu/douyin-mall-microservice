@@ -1,7 +1,7 @@
-package repository
+package mysql_dao
 
 import (
-	"github.com/All-Done-Right/douyin-mall-microservice/app/order/biz/repository/model"
+	"github.com/All-Done-Right/douyin-mall-microservice/app/order/biz/dal/mysql/model"
 	"gorm.io/gorm"
 )
 
@@ -27,4 +27,7 @@ func (r *OrderRepo) ListOrders(UserID uint32) ([]*model.Order, error) {
 		return nil, err
 	}
 	return orders, nil
+}
+func (r *OrderRepo) MarkOrderPaid(OrderID string) error {
+	return r.Where("order_id = ?", OrderID).Update("paid", true).Error
 }

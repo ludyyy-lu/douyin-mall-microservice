@@ -1,7 +1,7 @@
 package global
 
 import (
-	"github.com/All-Done-Right/douyin-mall-microservice/app/order/biz/config"
+	"github.com/All-Done-Right/douyin-mall-microservice/app/order/conf/config"
 	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"
 )

@@ -1,8 +1,8 @@
-package core
+package redis
 
 import (
 	"context"
-	"github.com/All-Done-Right/douyin-mall-microservice/app/order/biz/global"
+	"github.com/All-Done-Right/douyin-mall-microservice/app/order/global"
 	"github.com/redis/go-redis/v9"
 	"github.com/sirupsen/logrus"
 )

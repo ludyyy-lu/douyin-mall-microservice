@@ -1,7 +1,7 @@
-package core
+package mysql
 
 import (
-	"github.com/All-Done-Right/douyin-mall-microservice/app/order/biz/global"
+	"github.com/All-Done-Right/douyin-mall-microservice/app/order/global"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
