@@ -5,7 +5,7 @@ go 1.23.1
 toolchain go1.23.6
 
 replace (
-	github.com/All-Done-Right/douyin-mall-microservice/config => ./biz/config/config
+	github.com/All-Done-Right/douyin-mall-microservice/config => ./conf/config/config
 	github.com/All-Done-Right/douyin-mall-microservice/rpc_gen => ../../rpc_gen
 )
 
