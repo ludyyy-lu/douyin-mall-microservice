@@ -4,28 +4,27 @@ import (
 	"net"
 	"time"
 
-	"github.com/cloudwego/biz-demo/gomall/app/cart/biz/dal"
-	"github.com/cloudwego/biz-demo/gomall/app/cart/conf"
-	"github.com/cloudwego/biz-demo/gomall/app/cart/rpc"
-	"github.com/cloudwego/biz-demo/gomall/rpc_gen/kitex_gen/cart/cartservice"
+	"github.com/All-Done-Right/douyin-mall-microservice/app/cart/biz/dal"
+	"github.com/All-Done-Right/douyin-mall-microservice/app/cart/conf"
+	"github.com/All-Done-Right/douyin-mall-microservice/app/cart/rpc"
+	"github.com/All-Done-Right/douyin-mall-microservice/rpc_gen/kitex_gen/cart/cartservice"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
 	"github.com/cloudwego/kitex/server"
+	"github.com/joho/godotenv"
 	kitexlogrus "github.com/kitex-contrib/obs-opentelemetry/logging/logrus"
 	consul "github.com/kitex-contrib/registry-consul"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
-	"github.com/joho/godotenv"
 )
 
 func main() {
 	_ = godotenv.Load()
 	dal.Init()
-	rpc.InitClient()	
+	rpc.InitClient()
 
 	opts := kitexInit()
 	svr := cartservice.NewServer(new(CartServiceImpl), opts...)
-
 	err := svr.Run()
 	if err != nil {
 		klog.Error(err.Error())
@@ -44,11 +43,11 @@ func kitexInit() (opts []server.Option) {
 	if err != nil {
 		klog.Fatal(err)
 	}
-	
+
 	// service info
 	opts = append(opts, server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{
 		ServiceName: conf.GetConf().Kitex.Service,
-	}),server.WithRegistry(r))
+	}), server.WithRegistry(r))
 
 	// klog
 	logger := kitexlogrus.NewLogger()

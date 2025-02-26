@@ -1,3 +1,3 @@
-module github.com/cloudwego/biz-demo/gomall/app/frontend
+module github.com/All-Done-Right/douyin-mall-microservice/app/frontend
 
-replace github.com/apache/thrift => github.com/apache/thrift v0.13.0
+go 1.21.5

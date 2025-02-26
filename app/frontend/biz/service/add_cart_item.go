@@ -1,16 +1,15 @@
 package service
 
 import (
-    "context"
+	"context"
 
-    cart "github.com/cloudwego/biz-demo/goma1/app/frontend/hertz_gen/frontend/cart"
-    common "github.com/cloudwego/biz-demo/goma1/app/frontend/hertz_gen/frontend/common"
-    "github.com/cloudwego/biz-demo/goma1/app/frontend/infra/rpc"
-    frontendUtils "github.com/cloudwego/biz-demo/goma1/app/frontend/utils"
-    rpccart "github.com/cloudwego/biz-demo/goma1/rpc_gen/kitex_gen/cart"
-    "github.com/cloudwego/hertz/pkg/app"
+	cart "github.com/All-Done-Right/douyin-mall-microservice/app/frontend/hertz_gen/frontend/cart"
+	common "github.com/All-Done-Right/douyin-mall-microservice/app/frontend/hertz_gen/frontend/common"
+	"github.com/All-Done-Right/douyin-mall-microservice/app/frontend/infra/rpc"
+	frontendUtils "github.com/All-Done-Right/douyin-mall-microservice/app/frontend/utils"
+	rpccart "github.com/All-Done-Right/douyin-mall-microservice/rpc_gen/kitex_gen/cart"
+	"github.com/cloudwego/hertz/pkg/app"
 )
-
 
 type AddCartItemService struct {
 	RequestContext *app.RequestContext
@@ -27,17 +26,17 @@ func (h *AddCartItemService) Run(req *cart.AddCartItemReq) (resp *common.Empty, 
 	// hlog.CtxInfof(h.Context, "resp = %+v", resp)
 	//}()
 	// todo edit your code
-	err = rpc.CartClient.AddItem(h.Context, &rpcart.AddItemReq{
+	_, err = rpc.CartClient.AddItem(h.Context, &rpccart.AddItemReq{
 		UserId: uint32(frontendUtils.GetUserIdFromCtx(h.Context)),
 		Item: &rpccart.CartItem{
 			ProductId: req.ProductId,
 			Quantity:  uint32(req.ProductNum),
 		},
 	})
-	
+
 	if err != nil {
 		return nil, err
 	}
-		
+
 	return
 }

@@ -5,7 +5,7 @@ package frontend.cart;
 import "api.proto";
 import "frontend/common.proto";
 
-option go_package = "/frontend/cart";
+option go_package = "frontend/cart";
 
 service CartService {
     rpc AddCartItem(AddCartItemReq) returns (common.Empty) {

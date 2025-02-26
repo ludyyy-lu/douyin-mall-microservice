@@ -7,8 +7,8 @@
 package cart
 
 import (
-	_ "github.com/cloudwego/biz-demo/gomall/app/frontend/hertz_gen/api"
-	common "github.com/cloudwego/biz-demo/gomall/app/frontend/hertz_gen/frontend/common"
+	_ "github.com/All-Done-Right/douyin-mall-microservice/app/frontend/hertz_gen/api"
+	common "github.com/All-Done-Right/douyin-mall-microservice/app/frontend/hertz_gen/frontend/common"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"

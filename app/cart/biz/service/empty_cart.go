@@ -3,9 +3,11 @@ package service
 import (
 	"context"
 
-	"github.com/cloudwego/biz-demo/gomall/app/cart/biz/dal/mysql"
-	"github.com/cloudwego/biz-demo/gomall/app/cart/biz/model"
-	cart "github.com/cloudwego/biz-demo/gomall/rpc_gen/kitex_gen/cart"
+	"github.com/All-Done-Right/douyin-mall-microservice/app/cart/biz/dal/mysql"
+	"github.com/All-Done-Right/douyin-mall-microservice/app/cart/biz/model"
+
+	cart "github.com/All-Done-Right/douyin-mall-microservice/rpc_gen/kitex_gen/cart"
+
 	"github.com/cloudwego/kitex/pkg/kerrors"
 )
 
@@ -19,9 +21,9 @@ func NewEmptyCartService(ctx context.Context) *EmptyCartService {
 // Run create note info
 
 func (s *EmptyCartService) Run(req *cart.EmptyCartReq) (resp *cart.EmptyCartResp, err error) {
-    err = model.EmptyCart(s.ctx, mysql.DB, req.UserId)
-    if err != nil {
-        return nil, kerrors.NewBizStatusError(50001, err.Error())
-    }
-    return &cart.EmptyCartResp{}, nil
+	err = model.EmptyCart(s.ctx, mysql.DB, req.UserId)
+	if err != nil {
+		return nil, kerrors.NewBizStatusError(50001, err.Error())
+	}
+	return &cart.EmptyCartResp{}, nil
 }

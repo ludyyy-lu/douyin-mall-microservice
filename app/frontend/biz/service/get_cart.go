@@ -4,8 +4,13 @@ import (
 	"context"
 	"strconv"
 
-	common "github.com/cloudwego/biz-demo/gomall/app/frontend/hertz_gen/frontend/common"
+	common "github.com/All-Done-Right/douyin-mall-microservice/app/frontend/hertz_gen/frontend/common"
+	"github.com/All-Done-Right/douyin-mall-microservice/app/frontend/infra/rpc"
+	frontendUtils "github.com/All-Done-Right/douyin-mall-microservice/app/frontend/utils"
+	"github.com/All-Done-Right/douyin-mall-microservice/rpc_gen/kitex_gen/cart"
+	"github.com/All-Done-Right/douyin-mall-microservice/rpc_gen/kitex_gen/product"
 	"github.com/cloudwego/hertz/pkg/app"
+	"github.com/cloudwego/hertz/pkg/common/utils"
 )
 
 type GetCartService struct {
@@ -18,11 +23,6 @@ func NewGetCartService(Context context.Context, RequestContext *app.RequestConte
 }
 
 func (h *GetCartService) Run(req *common.Empty) (resp map[string]any, err error) {
-	//defer func() {
-	// hlog.CtxInfof(h.Context, "req = %+v", req)
-	// hlog.CtxInfof(h.Context, "resp = %+v", resp)
-	//}()
-	// todo edit your code
 
 	cartResp, err := rpc.CartClient.GetCart(h.Context, &cart.GetCartReq{
 		UserId: uint32(frontendUtils.GetUserIdFromCtx(h.Context)),

@@ -2,9 +2,10 @@ package cart
 
 import (
 	"context"
-	cart "github.com/cloudwego/biz-demo/gomall/rpc_gen/kitex_gen/cart"
 
-	"github.com/cloudwego/biz-demo/gomall/rpc_gen/kitex_gen/cart/cartservice"
+	cart "github.com/All-Done-Right/douyin-mall-microservice/rpc_gen/kitex_gen/cart"
+
+	"github.com/All-Done-Right/douyin-mall-microservice/rpc_gen/kitex_gen/cart/cartservice"
 	"github.com/cloudwego/kitex/client"
 	"github.com/cloudwego/kitex/client/callopt"
 )
