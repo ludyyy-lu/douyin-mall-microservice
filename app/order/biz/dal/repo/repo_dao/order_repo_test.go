@@ -55,7 +55,7 @@ func TestCreateOrder(t *testing.T) {
 		expectedError bool
 	}{
 		{
-			name: "successful order creation",
+			name: "成功创建订单",
 			order: model.Order{
 				Model: gorm.Model{
 					ID:        2, // 让数据库自动生成
@@ -230,9 +230,6 @@ func TestListOrders(t *testing.T) {
 			} else {
 				assert.NoError(t, err)
 				assert.Len(t, orders, tc.expectedOrders)
-				log.Println("-----------------")
-				log.Println(len(orders[1].UserCurrency))
-
 				// 验证第一个用例的订单项数量
 				if tc.name == "user with multiple orders" && len(orders) > 1 {
 					assert.Len(t, orders[0].OrderItems, 2) // 第一个订单有2个订单项
