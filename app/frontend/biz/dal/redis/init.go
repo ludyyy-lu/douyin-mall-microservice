@@ -3,7 +3,7 @@ package redis
 import (
 	"context"
 
-	"github.com/All-Done-Right/douyin-mall-microservice/app/frontend/conf"
+	"github.com/cloudwego/biz-demo/gomall/app/frontend/conf"
 	"github.com/redis/go-redis/v9"
 )
 
