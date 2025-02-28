@@ -1,4 +1,4 @@
-package mysql
+package repo
 
 import (
 	"github.com/All-Done-Right/douyin-mall-microservice/app/order/global"

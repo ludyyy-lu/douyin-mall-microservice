@@ -1,7 +1,7 @@
-package mysql_dao
+package repo_dao
 
 import (
-	"github.com/All-Done-Right/douyin-mall-microservice/app/order/biz/dal/mysql/model"
+	"github.com/All-Done-Right/douyin-mall-microservice/app/order/biz/dal/repo/model"
 	"gorm.io/gorm"
 )
 
@@ -20,14 +20,14 @@ func (r *OrderRepo) CreateOrder(order model.Order) (string, error) {
 	}
 	return order.OrderID, nil
 }
-func (r *OrderRepo) ListOrders(UserID uint32) ([]*model.Order, error) {
+func (r *OrderRepo) ListOrders(UserID uint32) ([]model.Order, error) {
 
-	var orders []*model.Order
+	var orders []model.Order
 	if err := r.Model(&model.Order{}).Where("user_id = ?", UserID).Preload("OrderItems").Find(&orders).Error; err != nil {
 		return nil, err
 	}
 	return orders, nil
 }
 func (r *OrderRepo) MarkOrderPaid(OrderID string) error {
-	return r.Where("order_id = ?", OrderID).Update("paid", true).Error
+	return r.Model(&model.Order{}).Where("order_id = ?", OrderID).Update("paid", true).Error
 }

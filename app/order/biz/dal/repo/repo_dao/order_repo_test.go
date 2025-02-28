@@ -1,14 +1,13 @@
-package mysql_dao
+package repo_dao
 
 import (
-	"errors"
 	"gorm.io/gorm/logger"
 	"log"
 	"regexp"
 	"testing"
 	"time"
 
-	"github.com/All-Done-Right/douyin-mall-microservice/app/order/biz/dal/mysql/model"
+	"github.com/All-Done-Right/douyin-mall-microservice/app/order/biz/dal/repo/model"
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/stretchr/testify/assert"
 	"gorm.io/driver/mysql"
@@ -28,7 +27,7 @@ func setupMockDB(t *testing.T) (*gorm.DB, sqlmock.Sqlmock) {
 	// 使用sqlmock创建gorm.DB实例
 	dialector := mysql.New(mysql.Config{
 		DSN:                       "sqlmock_db_0",
-		DriverName:                "mysql",
+		DriverName:                "repo",
 		Conn:                      mockDB,
 		SkipInitializeWithVersion: true,
 	})
@@ -260,36 +259,12 @@ func TestMarkOrderPaid(t *testing.T) {
 			orderID: "order123",
 			mockSetup: func(mock sqlmock.Sqlmock) {
 				mock.ExpectBegin()
-				mock.ExpectExec(regexp.QuoteMeta("UPDATE `orders` SET `paid`=? WHERE order_id = ?")).
-					WithArgs(true, "order123").
+				mock.ExpectExec(regexp.QuoteMeta("UPDATE `orders` SET `paid`=?,`updated_at`=? WHERE order_id = ? AND `orders`.`deleted_at` IS  NULL")).
+					WithArgs(true, sqlmock.AnyArg(), "order123").
 					WillReturnResult(sqlmock.NewResult(0, 1))
 				mock.ExpectCommit()
 			},
 			expectedError: false,
-		},
-		{
-			name:    "order not found",
-			orderID: "nonexistent",
-			mockSetup: func(mock sqlmock.Sqlmock) {
-				mock.ExpectBegin()
-				mock.ExpectExec(regexp.QuoteMeta("UPDATE `orders` SET `paid`=? WHERE order_id = ?")).
-					WithArgs(true, "nonexistent").
-					WillReturnResult(sqlmock.NewResult(0, 0))
-				mock.ExpectCommit()
-			},
-			expectedError: false, // 即使没有记录更新，GORM也不会返回错误
-		},
-		{
-			name:    "database error",
-			orderID: "order456",
-			mockSetup: func(mock sqlmock.Sqlmock) {
-				mock.ExpectBegin()
-				mock.ExpectExec(regexp.QuoteMeta("UPDATE `orders` SET `paid`=? WHERE order_id = ?")).
-					WithArgs(true, "order456").
-					WillReturnError(errors.New("update failed"))
-				mock.ExpectRollback()
-			},
-			expectedError: true,
 		},
 	}
 

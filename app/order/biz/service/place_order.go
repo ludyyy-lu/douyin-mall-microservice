@@ -3,7 +3,8 @@ package service
 import (
 	"context"
 	"errors"
-	"github.com/All-Done-Right/douyin-mall-microservice/app/order/biz/dal/mysql/model"
+	"github.com/All-Done-Right/douyin-mall-microservice/app/order/biz/dal/repo/model"
+	"github.com/All-Done-Right/douyin-mall-microservice/app/order/biz/dal/repo/repo_dao"
 	_const "github.com/All-Done-Right/douyin-mall-microservice/app/order/const"
 	"github.com/All-Done-Right/douyin-mall-microservice/app/order/global"
 	"github.com/All-Done-Right/douyin-mall-microservice/rpc_gen/kitex_gen/order"
@@ -14,9 +15,11 @@ import (
 
 type PlaceOrderService struct {
 	ctx context.Context
+	db  repo_dao.Repo
 } // NewRenewTokenByRPCService new RenewTokenByRPCService
-func NewPlaceOrderService(ctx context.Context) *PlaceOrderService {
-	return &PlaceOrderService{ctx: ctx}
+func NewPlaceOrderService(ctx context.Context, db repo_dao.Repo) *PlaceOrderService {
+	return &PlaceOrderService{ctx: ctx, db: db}
+
 }
 func (s PlaceOrderService) Run(req *order.PlaceOrderReq) (resp *order.PlaceOrderResp, err error) {
 	if req.Address == nil {
@@ -28,8 +31,9 @@ func (s PlaceOrderService) Run(req *order.PlaceOrderReq) (resp *order.PlaceOrder
 		OrderID:      orderID,
 		UserID:       req.UserId,
 		UserCurrency: req.UserCurrency,
+		Email:        req.Email,
 		Address: model.Address{
-			Email:         req.Email,
+
 			StreetAddress: req.Address.StreetAddress,
 			City:          req.Address.City,
 			State:         req.Address.State,
@@ -50,12 +54,13 @@ func (s PlaceOrderService) Run(req *order.PlaceOrderReq) (resp *order.PlaceOrder
 	}
 	err = global.RDB.Set(s.ctx, orderID, req.UserId, time.Second*_const.ORDER_TIME_TO_EXPIRE).Err()
 	if err != nil {
-		logrus.Errorln("set order id to redis failed")
-		return nil, errors.New("set order id to redis failed")
+		logrus.Errorln("set order id to cache failed")
+		return nil, err
 	}
-	if err := global.DB.Create(&orderData).Error; err != nil {
+	orderID, err = s.db.CreateOrder(orderData)
+	if err != nil {
 		logrus.Errorln("create order failed")
-		return nil, errors.New("create order failed")
+		return nil, err
 	}
 
 	resp = &order.PlaceOrderResp{

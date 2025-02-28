@@ -3,7 +3,7 @@ package service
 import (
 	"context"
 	"errors"
-	"github.com/All-Done-Right/douyin-mall-microservice/app/order/biz/dal/mysql/mysql_dao"
+	"github.com/All-Done-Right/douyin-mall-microservice/app/order/biz/dal/repo/repo_dao"
 	"github.com/All-Done-Right/douyin-mall-microservice/app/order/global"
 	"github.com/All-Done-Right/douyin-mall-microservice/rpc_gen/kitex_gen/order"
 	"github.com/redis/go-redis/v9"
@@ -12,9 +12,10 @@ import (
 
 type MarkOrderPaidService struct {
 	ctx context.Context
+	db  repo_dao.Repo
 } // NewRenewTokenByRPCService new RenewTokenByRPCService
-func NewMarkOrderPaidService(ctx context.Context) *MarkOrderPaidService {
-	return &MarkOrderPaidService{ctx: ctx}
+func NewMarkOrderPaidService(ctx context.Context, db repo_dao.Repo) *MarkOrderPaidService {
+	return &MarkOrderPaidService{ctx: ctx, db: db}
 }
 func (s MarkOrderPaidService) Run(req *order.MarkOrderPaidReq) (resp *order.MarkOrderPaidResp, err error) {
 	userID := req.GetUserId()
@@ -28,9 +29,7 @@ func (s MarkOrderPaidService) Run(req *order.MarkOrderPaidReq) (resp *order.Mark
 		logrus.Debugln("order not belong to the user")
 		return nil, errors.New("order not belong to the user")
 	}
-	// 1. check if the order belongs to the user
-	dao := mysql_dao.NewOrderRepo(global.DB)
-	err = dao.MarkOrderPaid(orderID)
+	err = s.db.MarkOrderPaid(orderID)
 	if err != nil {
 		logrus.Errorln(err)
 		return nil, errors.New("mark order paid failed")
