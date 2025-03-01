@@ -67,10 +67,17 @@ func GetConf() *Config {
 func initConf() {
 	prefix := "conf"
 	confFileRelPath := filepath.Join(prefix, filepath.Join(GetEnv(), "conf.yaml"))
-	content, err := ioutil.ReadFile(confFileRelPath)
-	if err != nil {
-		panic(err)
+
+	for i := 0; i < 5; i++ {
+		if _, err := os.Stat(confFileRelPath); err == nil {
+			// fmt.Println("找到了")
+			break
+		} else {
+			// fmt.Println(confFileRelPath)
+			confFileRelPath = "../" + confFileRelPath
+		}
 	}
+	content, err := ioutil.ReadFile(confFileRelPath)
 	conf = new(Config)
 	err = yaml.Unmarshal(content, conf)
 	if err != nil {
