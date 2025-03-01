@@ -3,11 +3,13 @@ package redis
 import (
 	"context"
 
-	"github.com/All-Done-Right/douyin-mall-microservice/app/frontend/conf"
+	"github.com/All-Done-Right/douyin-mall-microservice/app/cart/conf"
 	"github.com/redis/go-redis/v9"
 )
 
-var RedisClient *redis.Client
+var (
+	RedisClient *redis.Client
+)
 
 func Init() {
 	RedisClient = redis.NewClient(&redis.Options{
