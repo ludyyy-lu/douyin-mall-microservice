@@ -1,6 +1,6 @@
 module github.com/All-Done-Right/douyin-mall-microservice/app/frontend
 
-go 1.23.1
+go 1.22.0
 
 toolchain go1.23.6
 
