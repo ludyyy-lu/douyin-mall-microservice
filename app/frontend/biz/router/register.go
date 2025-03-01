@@ -23,7 +23,7 @@ import (
 	category "github.com/All-Done-Right/douyin-mall-microservice/app/frontend/biz/router/category"
 	checkout "github.com/All-Done-Right/douyin-mall-microservice/app/frontend/biz/router/checkout"
 	home "github.com/All-Done-Right/douyin-mall-microservice/app/frontend/biz/router/home"
-	order "github.com/All-Done-Right/douyin-mall-microservice/app/frontend/biz/router/order"
+	//order "github.com/All-Done-Right/douyin-mall-microservice/app/frontend/biz/router/order"
 	product "github.com/All-Done-Right/douyin-mall-microservice/app/frontend/biz/router/product"
 	"github.com/cloudwego/hertz/pkg/app/server"
 )
@@ -32,9 +32,6 @@ import (
 func GeneratedRegister(r *server.Hertz) {
 	//INSERT_POINT: DO NOT DELETE THIS LINE!
 	about.Register(r)
-
-	order.Register(r)
-
 	checkout.Register(r)
 
 	auth.Register(r)
