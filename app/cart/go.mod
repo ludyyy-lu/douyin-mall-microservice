@@ -88,3 +88,11 @@ require (
 	google.golang.org/protobuf v1.33.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
+require (
+    go.uber.org/mock v0.3.0
+)
+// 排除新版
+exclude (
+    go.uber.org/mock v0.4.0
+    go.uber.org/mock v0.5.0
+)
