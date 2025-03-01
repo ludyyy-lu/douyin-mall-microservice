@@ -29,7 +29,7 @@ func (s *AddItemService) Run(req *cart.AddItemReq) (resp *cart.AddItemResp, err 
 		return nil, kerrors.NewBizStatusError(40004, "product not found")
 	}
 	cartItem := &model.Cart{
-		UserId:    req.UserId,
+		UserID:    req.UserId,
 		ProductID: req.Item.ProductId,
 		Qty:       req.Item.Quantity,
 	}
