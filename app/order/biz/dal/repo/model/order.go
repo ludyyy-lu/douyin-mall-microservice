@@ -10,8 +10,8 @@ type Order struct {
 	OrderID      string      `gorm:"type:varchar(100);uniqueIndex"`
 	UserID       uint32      `gorm:"type:int(11)"`
 	UserCurrency string      `gorm:"type:varchar(10)"`
-	Email        string      `gorm:"column:email"`
 	OrderItems   []OrderItem `gorm:"dforeignKey:OrderID;references:OrderID"`
+	Email        string      `gorm:"type:varchar(100)"`
 	Address      Address     `gorm:"embedded"`
 	Paid         bool
 	Expired      bool
@@ -19,7 +19,6 @@ type Order struct {
 
 // Address 订单地址
 type Address struct {
-	Email         string `gorm:"type:varchar(100)"`
 	StreetAddress string `gorm:"column:street_address"`
 	City          string `gorm:"column:city"`
 	State         string `gorm:"column:state"`

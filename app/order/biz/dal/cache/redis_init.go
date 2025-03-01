@@ -1,4 +1,4 @@
-package redis
+package cache
 
 import (
 	"context"
@@ -20,7 +20,7 @@ func InitRedis() {
 	if err != nil {
 		panic(err)
 	}
-	logrus.Infoln("successfully connecting to redis", pong)
+	logrus.Infoln("successfully connecting to cache", pong)
 	global.RDB = rdb
 
 }
