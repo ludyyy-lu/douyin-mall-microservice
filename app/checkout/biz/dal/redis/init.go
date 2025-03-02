@@ -17,7 +17,7 @@ package redis
 import (
 	"context"
 
-	"github.com/cloudwego/biz-demo/gomall/app/checkout/conf"
+	"github.com/All-Done-Right/douyin-mall-microservice/app/checkout/conf"
 	"github.com/redis/go-redis/v9"
 )
 
