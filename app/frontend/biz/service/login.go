@@ -35,19 +35,34 @@ func NewLoginService(Context context.Context, RequestContext *app.RequestContext
 }
 
 func (h *LoginService) Run(req *auth.LoginReq) (resp string, userId int32, err error) {
+	// 调用 RPC 登录接口
 	res, err := rpc.UserClient.Login(h.Context, &rpcuser.LoginReq{Email: req.Email, Password: req.Password})
 	if err != nil {
-		return
+		return "", 0, err
 	}
 
+	// 登录成功，保存会话
 	session := sessions.Default(h.RequestContext)
 	session.Set("user_id", res.UserId)
 	err = session.Save()
-	frontendutils.MustHandleError(err)
+	if err != nil {
+		return "", 0, err // 返回错误而不是 panic
+	}
+
+	// 设置重定向地址
 	redirect := "/"
 	if frontendutils.ValidateNext(req.Next) {
 		redirect = req.Next
 	}
 
 	return redirect, res.UserId, nil
+}
+
+// 自定义错误类型，用于区分“用户不存在”
+type UserNotFoundError struct {
+	Email string
+}
+
+func (e *UserNotFoundError) Error() string {
+	return "用户不存在"
 }

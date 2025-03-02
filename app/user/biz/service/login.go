@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"errors"
+	"fmt"
 
 	"github.com/All-Done-Right/douyin-mall-microservice/app/user/biz/dal/mysql"
 	"github.com/All-Done-Right/douyin-mall-microservice/app/user/biz/model"
@@ -18,19 +19,25 @@ func NewLoginService(ctx context.Context) *LoginService {
 }
 
 // Run create note info
-func (s *LoginService) Run(req *user.LoginReq) (resp *user.LoginResp, err error) {
-	// Finish your business logic.
+func (s *LoginService) Run(req *user.LoginReq) (*user.LoginResp, error) {
+	// 检查用户是否存在
 	if req.Email == "" || req.Password == "" {
-		return nil, errors.New("email or password is empty")
+		return nil, errors.New("邮箱或密码不能为空")
 	}
-	userRow, err := model.GetByEmail(mysql.DB, s.ctx, req.Email)
+	existingUser, err := model.GetByEmail(mysql.DB, s.ctx, req.Email)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("查询用户时出错: %v", err.Error())
 	}
-	err = bcrypt.CompareHashAndPassword([]byte(userRow.PasswordHashed), []byte(req.Password))
-	if err != nil {
-		return nil, err
+	if existingUser == nil {
+		return nil, errors.New("用户不存在")
 	}
 
-	return &user.LoginResp{UserId: int32(userRow.ID)}, nil
+	// 验证密码
+	err = bcrypt.CompareHashAndPassword([]byte(existingUser.PasswordHashed), []byte(req.Password))
+	if err != nil {
+		return nil, errors.New("密码不正确")
+	}
+
+	// 登录成功，返回响应
+	return &user.LoginResp{UserId: int32(existingUser.ID)}, nil
 }

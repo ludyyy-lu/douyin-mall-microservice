@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"net"
 	"strings"
 
@@ -39,8 +38,7 @@ func main() {
 	mtl.InitMetric(ServiceName,
 		conf.GetConf().Kitex.MetricsPort,
 		RegisterAddr)
-	p := mtl.InitTracing(ServiceName)
-	defer p.Shutdown(context.Background())
+
 	dal.Init()
 
 	opts := kitexInit()
@@ -65,6 +63,6 @@ func kitexInit() (opts []server.Option) {
 		panic(err)
 	}
 
-	opts = append(opts, server.WithServiceAddr(addr), server.WithSuite(serversuite.CommonServerSuite{CurrentServiceName: ServiceName, RegisterAddr: RegisterAddr}))
+	opts = append(opts, server.WithServiceAddr(addr), server.WithSuite(serversuite.CommonServerSuite{CurrentServiceName: ServiceName, RegistryAddr: RegisterAddr}))
 	return
 }
