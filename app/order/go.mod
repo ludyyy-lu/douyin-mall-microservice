@@ -17,6 +17,7 @@ require (
 	github.com/alicebob/miniredis/v2 v2.34.0
 	github.com/cloudwego/kitex v0.12.2
 	github.com/google/uuid v1.6.0
+	github.com/joho/godotenv v1.5.1
 	github.com/kitex-contrib/registry-consul v0.1.0
 	github.com/kitex-contrib/registry-etcd v0.2.5
 	github.com/pelletier/go-toml v1.9.5
