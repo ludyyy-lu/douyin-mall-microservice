@@ -18,8 +18,8 @@ func TestUpdateProducts_Run(t *testing.T) {
 	s := NewUpdateProductsService(ctx)
 	// init req and assert value
 	var p product.Product
-	p.Id = 3
-	p.Name = "李四"
+	p.Id = 4
+	p.Name = "王五"
 	req := &product.UpdateProductsReq{
 		Product: &p,
 	}
