@@ -17,6 +17,7 @@ package middleware
 import (
 	"context"
 	"fmt"
+
 	"github.com/All-Done-Right/douyin-mall-microservice/app/frontend/infra/rpc"
 	"github.com/All-Done-Right/douyin-mall-microservice/app/frontend/utils"
 	"github.com/All-Done-Right/douyin-mall-microservice/rpc_gen/kitex_gen/auth"
@@ -34,7 +35,13 @@ func GlobalAuth() app.HandlerFunc {
 			c.Next(ctx)
 			return
 		}
+
+		// 将用户ID设置到上下文中
 		ctx = context.WithValue(ctx, utils.UserIdKey, userId)
+
+		// 将用户ID设置到请求上下文中，使模板可以访问
+		c.Set("user_id", userId)
+
 		c.Next(ctx)
 	}
 }
@@ -57,7 +64,13 @@ func Auth() app.HandlerFunc {
 			c.Next(ctx)
 			return
 		}
+
+		// 将用户ID设置到上下文中
 		ctx = context.WithValue(ctx, utils.UserIdKey, userId)
+
+		// 将用户ID设置到请求上下文中，使模板可以访问
+		c.Set("user_id", userId)
+
 		c.Next(ctx)
 	}
 }

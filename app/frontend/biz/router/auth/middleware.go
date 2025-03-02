@@ -17,6 +17,7 @@
 package auth
 
 import (
+	"github.com/All-Done-Right/douyin-mall-microservice/app/frontend/middleware"
 	"github.com/cloudwego/hertz/pkg/app"
 )
 
@@ -42,5 +43,32 @@ func _logoutMw() []app.HandlerFunc {
 
 func _registerMw() []app.HandlerFunc {
 	// your code...
+	return nil
+}
+
+// 用户相关的中间件
+
+func _userMw() []app.HandlerFunc {
+	// 用户相关路由的中间件
+	return []app.HandlerFunc{middleware.Auth()}
+}
+
+func _getuserprofileMw() []app.HandlerFunc {
+	// 获取用户信息的中间件
+	return nil
+}
+
+func _profileMw() []app.HandlerFunc {
+	// 用户个人信息页面相关中间件
+	return nil
+}
+
+func _updateuserprofileMw() []app.HandlerFunc {
+	// 更新用户信息的中间件
+	return nil
+}
+
+func _deleteuserMw() []app.HandlerFunc {
+	// 删除用户的中间件
 	return nil
 }
