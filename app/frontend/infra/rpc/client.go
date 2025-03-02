@@ -1,3 +1,39 @@
+
+package rpc
+
+import (
+	"fmt"
+	"github.com/All-Done-Right/douyin-mall-microservice/rpc_gen/kitex_gen/product/productcatalogservice"
+	"github.com/cloudwego/hertz/pkg/common/hlog"
+	"github.com/cloudwego/kitex/client"
+	"github.com/kitex-contrib/registry-nacos/v2/resolver"
+	"sync"
+)
+
+var (
+	ProductClient productcatalogservice.Client
+	//保证只能初始化一次
+	once sync.Once
+)
+
+func Init() {
+	once.Do(func() {
+		iniProductClient()
+	})
+}
+func iniProductClient() {
+
+	r, err := resolver.NewDefaultNacosResolver()
+	fmt.Println("product服务发现", r.Name())
+	if err != nil {
+		hlog.Fatal(err)
+	}
+	ProductClient, err = productcatalogservice.NewClient("product", client.WithResolver(r))
+	if err != nil {
+		hlog.Fatal(err)
+	}
+
+
 // Copyright 2024 CloudWeGo Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -62,42 +98,43 @@ func InitClient() {
 		initCartClient()
 		initCheckoutClient()
 		initOrderClient()
+    
 	})
 }
 
-func initProductClient() {
-	var opts []client.Option
+// func initProductClient() {
+// 	var opts []client.Option
 
-	cbs := circuitbreak.NewCBSuite(func(ri rpcinfo.RPCInfo) string {
-		return circuitbreak.RPCInfo2Key(ri)
-	})
-	cbs.UpdateServiceCBConfig("shop-frontend/product/GetProduct", circuitbreak.CBConfig{Enable: true, ErrRate: 0.5, MinSample: 2})
+// 	cbs := circuitbreak.NewCBSuite(func(ri rpcinfo.RPCInfo) string {
+// 		return circuitbreak.RPCInfo2Key(ri)
+// 	})
+// 	cbs.UpdateServiceCBConfig("shop-frontend/product/GetProduct", circuitbreak.CBConfig{Enable: true, ErrRate: 0.5, MinSample: 2})
 
-	opts = append(opts, commonSuite, client.WithCircuitBreaker(cbs), client.WithFallback(fallback.NewFallbackPolicy(fallback.UnwrapHelper(func(ctx context.Context, req, resp interface{}, err error) (fbResp interface{}, fbErr error) {
-		methodName := rpcinfo.GetRPCInfo(ctx).To().Method()
-		if err == nil {
-			return resp, err
-		}
-		if methodName != "ListProducts" {
-			return resp, err
-		}
-		return &product.ListProductsResp{
-			Products: []*product.Product{
-				{
-					Price:       6.6,
-					Id:          3,
-					Picture:     "/static/image/t-shirt.jpeg",
-					Name:        "T-Shirt",
-					Description: "CloudWeGo T-Shirt",
-				},
-			},
-		}, nil
-	}))))
-	opts = append(opts, client.WithTracer(prometheus.NewClientTracer("", "", prometheus.WithDisableServer(true), prometheus.WithRegistry(mtl.Registry))))
+// 	opts = append(opts, commonSuite, client.WithCircuitBreaker(cbs), client.WithFallback(fallback.NewFallbackPolicy(fallback.UnwrapHelper(func(ctx context.Context, req, resp interface{}, err error) (fbResp interface{}, fbErr error) {
+// 		methodName := rpcinfo.GetRPCInfo(ctx).To().Method()
+// 		if err == nil {
+// 			return resp, err
+// 		}
+// 		if methodName != "ListProducts" {
+// 			return resp, err
+// 		}
+// 		return &product.ListProductsResp{
+// 			Products: []*product.Product{
+// 				{
+// 					Price:       6.6,
+// 					Id:          3,
+// 					Picture:     "/static/image/t-shirt.jpeg",
+// 					Name:        "T-Shirt",
+// 					Description: "CloudWeGo T-Shirt",
+// 				},
+// 			},
+// 		}, nil
+// 	}))))
+// 	opts = append(opts, client.WithTracer(prometheus.NewClientTracer("", "", prometheus.WithDisableServer(true), prometheus.WithRegistry(mtl.Registry))))
 
-	ProductClient, err = productcatalogservice.NewClient("product", opts...)
-	frontendutils.MustHandleError(err)
-}
+// 	ProductClient, err = productcatalogservice.NewClient("product", opts...)
+// 	frontendutils.MustHandleError(err)
+// }
 
 func initAuthClient() {
 	AuthClient, err = authservice.NewClient("auth", commonSuite)
@@ -122,4 +159,8 @@ func initCheckoutClient() {
 func initOrderClient() {
 	OrderClient, err = orderservice.NewClient("order", commonSuite)
 	frontendutils.MustHandleError(err)
+
 }
+
+
+  
