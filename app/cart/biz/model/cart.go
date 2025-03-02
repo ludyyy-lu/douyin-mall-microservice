@@ -2,10 +2,19 @@ package model
 
 import (
 	"context"
+	"database/sql"
 	"errors"
+
+	//"github.com/All-Done-Right/douyin-mall-microservice/rpc_gen/kitex_gen/product/productcatalogservice"
 
 	"gorm.io/gorm"
 )
+
+type CartStore interface {
+	AddItem(ctx context.Context, db *sql.DB, item *Cart) error
+	EmptyCart(ctx context.Context, db *sql.DB, userID int64) error
+	GetCartByUserId(ctx context.Context, db *sql.DB, userID int64) ([]*Cart, error)
+}
 
 type Cart struct {
 	gorm.Model

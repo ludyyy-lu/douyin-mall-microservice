@@ -5,23 +5,39 @@ import (
 
 	"github.com/All-Done-Right/douyin-mall-microservice/app/cart/biz/dal/mysql"
 	"github.com/All-Done-Right/douyin-mall-microservice/app/cart/biz/model"
+	"gorm.io/gorm"
 
 	cart "github.com/All-Done-Right/douyin-mall-microservice/rpc_gen/kitex_gen/cart"
 
 	"github.com/cloudwego/kitex/pkg/kerrors"
 )
 
+/*
 type GetCartService struct {
 	ctx context.Context
-} // NewGetCartService new GetCartService
+}
+*/
+/*
+type GetCartService struct {
+	CartStore model.CartStore
+	Ctx       context.Context
+}
+*/
+type GetCartService struct {
+	CartStore model.CartStore
+	DB        *gorm.DB // 新增DB字段
+	Ctx       context.Context
+}
+
+// NewGetCartService new GetCartService
 func NewGetCartService(ctx context.Context) *GetCartService {
-	return &GetCartService{ctx: ctx}
+	return &GetCartService{Ctx: ctx}
 }
 
 // Run create note info
 
 func (s *GetCartService) Run(req *cart.GetCartReq) (resp *cart.GetCartResp, err error) {
-	list, err := model.GetCartByUserId(s.ctx, mysql.DB, req.UserId)
+	list, err := model.GetCartByUserId(s.Ctx, mysql.DB, req.UserId)
 	if err != nil {
 		return nil, kerrors.NewBizStatusError(50002, err.Error())
 	}

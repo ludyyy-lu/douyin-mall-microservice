@@ -7,21 +7,29 @@ import (
 	"github.com/All-Done-Right/douyin-mall-microservice/app/cart/biz/model"
 	"github.com/All-Done-Right/douyin-mall-microservice/app/cart/rpc"
 	cart "github.com/All-Done-Right/douyin-mall-microservice/rpc_gen/kitex_gen/cart"
-	"github.com/All-Done-Right/douyin-mall-microservice/rpc_gen/kitex_gen/product"
+	product "github.com/All-Done-Right/douyin-mall-microservice/rpc_gen/kitex_gen/product"
+
+	RPCproduct "github.com/All-Done-Right/douyin-mall-microservice/rpc_gen/kitex_gen/product/productcatalogservice"
+
+	//RPCproduct "github.com/All-Done-Right/douyin-mall-microservice/rpc_gen/rpc/product"
 	"github.com/cloudwego/kitex/pkg/kerrors"
 )
 
 type AddItemService struct {
-	ctx context.Context
-} // NewAddItemService new AddItemService
+	ProductClient RPCproduct.Client
+	CartStore     model.CartStore
+	Ctx           context.Context
+}
+
+// NewAddItemService new AddItemService
 func NewAddItemService(ctx context.Context) *AddItemService {
-	return &AddItemService{ctx: ctx}
+	return &AddItemService{Ctx: ctx}
 }
 
 // Run create note info
 
 func (s *AddItemService) Run(req *cart.AddItemReq) (resp *cart.AddItemResp, err error) {
-	productResp, err := rpc.ProductClient.GetProduct(s.ctx, &product.GetProductReq{Id: req.Item.ProductId})
+	productResp, err := rpc.ProductClient.GetProduct(s.Ctx, &product.GetProductReq{Id: req.Item.ProductId})
 	if err != nil {
 		return nil, err
 	}
@@ -33,7 +41,7 @@ func (s *AddItemService) Run(req *cart.AddItemReq) (resp *cart.AddItemResp, err 
 		ProductID: req.Item.ProductId,
 		Qty:       req.Item.Quantity,
 	}
-	err = model.AddItem(s.ctx, mysql.DB, cartItem)
+	err = model.AddItem(s.Ctx, mysql.DB, cartItem)
 	if err != nil {
 		return nil, kerrors.NewBizStatusError(50000, err.Error())
 	}

@@ -9,17 +9,23 @@ import (
 	"github.com/All-Done-Right/douyin-mall-microservice/app/cart/rpc"
 	"github.com/All-Done-Right/douyin-mall-microservice/rpc_gen/kitex_gen/cart/cartservice"
 	"github.com/cloudwego/kitex/pkg/klog"
-	"github.com/cloudwego/kitex/pkg/rpcinfo"
 	"github.com/cloudwego/kitex/server"
 	"github.com/joho/godotenv"
 	kitexlogrus "github.com/kitex-contrib/obs-opentelemetry/logging/logrus"
-	consul "github.com/kitex-contrib/registry-consul"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
+	"github.com/All-Done-Right/douyin-mall-microservice/common/serversuite"
+	"github.com/All-Done-Right/douyin-mall-microservice/common/mtl"
+)
+
+var (
+	ServiceName  = conf.GetConf().Kitex.Service
+	RegistryAddr = conf.GetConf().Registry.RegistryAddress[0]
 )
 
 func main() {
 	_ = godotenv.Load()
+	mtl.InitMetric(ServiceName, conf.GetConf().Kitex.MetricsPort, RegistryAddr)
 	dal.Init()
 	rpc.InitClient()
 
@@ -37,18 +43,22 @@ func kitexInit() (opts []server.Option) {
 	if err != nil {
 		panic(err)
 	}
-	opts = append(opts, server.WithServiceAddr(addr))
-
-	r, err := consul.NewConsulRegister(conf.GetConf().Registry.RegistryAddress[0])
-	if err != nil {
-		klog.Fatal(err)
-	}
-
-	// service info
-	opts = append(opts, server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{
-		ServiceName: conf.GetConf().Kitex.Service,
-	}), server.WithRegistry(r))
-
+	opts = append(opts, server.WithServiceAddr(addr), server.WithSuite(serversuite.CommonServerSuite{
+		CurrentServiceName: ServiceName,
+		RegistryAddr:       RegistryAddr,
+	}))
+	/*
+		r, err := consul.NewConsulRegister(conf.GetConf().Registry.RegistryAddress[0])
+		if err != nil {
+			klog.Fatal(err)
+		}
+	*/
+	/*
+		// service info
+		opts = append(opts, server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{
+			ServiceName: conf.GetConf().Kitex.Service,
+		}), server.WithRegistry(r))
+	*/
 	// klog
 	logger := kitexlogrus.NewLogger()
 	klog.SetLogger(logger)
