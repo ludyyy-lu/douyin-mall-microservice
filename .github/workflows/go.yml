@@ -31,8 +31,6 @@ jobs:
             ${{ runner.os }}-go-
 
       - name: Build and Test ${{ matrix.service }}
-        working-directory: ./app/${{ matrix.service }}
-        run: |
-          go mod tidy
-          go build -v .
-          go test -v ./...
+        uses: robherley/go-test-action@v0.4.1
+        with:
+          working-directory: ./app/${{ matrix.service }}
