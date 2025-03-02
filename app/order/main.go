@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/All-Done-Right/douyin-mall-microservice/app/order/biz/dal/repo/model"
 	"github.com/All-Done-Right/douyin-mall-microservice/app/order/core"
 	"github.com/All-Done-Right/douyin-mall-microservice/app/order/global"
 	"github.com/All-Done-Right/douyin-mall-microservice/rpc_gen/kitex_gen/order/orderservice"
@@ -18,7 +19,7 @@ func main() {
 	core.InitDefaultLogger()
 	logrus.Println(global.Config)
 	core.InitDB()
-	//	global.DB.AutoMigrate(&model.Order{}, &model.OrderItem{})
+	global.DB.AutoMigrate(&model.Order{}, &model.OrderItem{})
 	r, err := consul.NewConsulRegister(global.Config.Consul.Addr())
 	if err != nil {
 		klog.Fatal(err)
