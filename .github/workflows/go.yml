@@ -8,6 +8,7 @@ on: [push, pull_request]
 jobs:
   build:
     runs-on: ubuntu-latest
+    if: github.repository == 'All-Done-Right/douyin-mall-microservice'
     steps:
       - uses: actions/checkout@v4
 
