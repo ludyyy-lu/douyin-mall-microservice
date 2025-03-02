@@ -4,12 +4,17 @@ import (
 	"fmt"
 	"github.com/All-Done-Right/douyin-mall-microservice/app/order/global"
 	"github.com/Mmx233/EnvConfig"
+	"github.com/joho/godotenv"
 	"github.com/pelletier/go-toml"
 	"log"
 	"os"
 )
 
 func InitConfig() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatalf("Error loading .env file")
+	}
 	configPath := "conf/%s/config.toml"
 	configPath = fmt.Sprintf(configPath, "test")
 	if mode := os.Getenv("ENV"); mode != "" {
