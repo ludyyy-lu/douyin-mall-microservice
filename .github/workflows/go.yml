@@ -33,4 +33,4 @@ jobs:
       - name: Build and Test ${{ matrix.service }}
         uses: robherley/go-test-action@v0.4.1
         with:
-          moduleDirectory:: ./app/${{ matrix.service }}
+          moduleDirectory: ./app/${{ matrix.service }}
