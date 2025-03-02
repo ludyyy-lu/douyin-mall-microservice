@@ -48,3 +48,9 @@ func _insertproductMw() []app.HandlerFunc {
 func _updateproductMw() []app.HandlerFunc { return nil }
 
 func _searchproducsMw() []app.HandlerFunc { return nil }
+
+func _searchproducsMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+

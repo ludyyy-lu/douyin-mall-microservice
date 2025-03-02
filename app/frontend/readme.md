@@ -26,5 +26,9 @@
 ```shell
 sh build.sh
 sh output/bootstrap.sh
+
 ```
 ## 需要更改配置文件 以及main.go服务注册的代码，以及Frontend模块对商品服务的服务发现的代码
+
+```
+
