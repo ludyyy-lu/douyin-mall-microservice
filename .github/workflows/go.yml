@@ -14,6 +14,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Install jq
+        run: sudo apt-get install -y jq
+
       - name: Get changed files
         id: changed-files
         uses: tj-actions/changed-files@v42
@@ -39,9 +42,10 @@ jobs:
             CHANGED_SERVICES=("${SERVICES[@]}")
           fi
 
-          # 输出结果
-          echo "Changed services: ${CHANGED_SERVICES[*]}"
-          echo "::set-output name=services::${CHANGED_SERVICES[*]}"
+          # 将结果转换为 JSON 数组
+          CHANGED_SERVICES_JSON=$(echo "${CHANGED_SERVICES[@]}" | jq -c -R 'split(" ")')
+          echo "Changed services: $CHANGED_SERVICES_JSON"
+          echo "::set-output name=services::$CHANGED_SERVICES_JSON"
 
   build-and-test:
     runs-on: ubuntu-latest
