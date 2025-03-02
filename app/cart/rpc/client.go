@@ -3,10 +3,10 @@ package rpc
 import (
 	"sync"
 
-	//"github.com/cloudwego/biz-demo/gomall/app/cart/conf"
-	//cartutils "github.com/cloudwego/biz-demo/gomall/app/cart/utils"
-	//"github.com/cloudwego/biz-demo/gomall/rpc_gen/kitex_gen/product/productcatalogservice"
-	
+	//"github.com/All-Done-Right/douyin-mall-microservice/app/cart/conf"
+	//cartutils "github.com/All-Done-Right/douyin-mall-microservice/app/cart/utils"
+	//"github.com/All-Done-Right/douyin-mall-microservice/rpc_gen/kitex_gen/product/productcatalogservice"
+
 	"github.com/All-Done-Right/douyin-mall-microservice/app/cart/conf"
 	cartutils "github.com/All-Done-Right/douyin-mall-microservice/app/cart/utils"
 	"github.com/All-Done-Right/douyin-mall-microservice/rpc_gen/kitex_gen/product/productcatalogservice"
@@ -25,7 +25,7 @@ func InitClient() {
 	})
 }
 
-func initProductClient() { 
+func initProductClient() {
 	var opts []client.Option
 	r, err := consul.NewConsulResolver(conf.GetConf().Registry.RegistryAddress[0])
 	cartutils.MustHandleError(err)

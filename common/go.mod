@@ -1,8 +1,9 @@
-module github.com/cloudwego/biz-demo/gomall/common
+module github.com/All-Done-Right/douyin-mall-microservice/common
 
 go 1.21
 
 require (
+	github.com/All-Done-Right/douyin-mall-microservice/common v0.0.0-20250221030954-58f21ff9d9c9
 	github.com/cloudwego/kitex v0.11.3
 	github.com/hertz-contrib/obs-opentelemetry/provider v0.2.3
 	github.com/kitex-contrib/config-consul v0.1.2
@@ -70,7 +71,6 @@ require (
 	github.com/prometheus/client_model v0.5.0 // indirect
 	github.com/prometheus/common v0.48.0 // indirect
 	github.com/prometheus/procfs v0.12.0 // indirect
-	github.com/rogpeppe/go-internal v1.12.0 // indirect
 	github.com/stretchr/testify v1.9.0 // indirect
 	github.com/tidwall/gjson v1.17.3 // indirect
 	github.com/tidwall/match v1.1.1 // indirect

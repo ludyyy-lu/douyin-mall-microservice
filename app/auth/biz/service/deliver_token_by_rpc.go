@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"errors"
 	"time"
 
 	"github.com/All-Done-Right/douyin-mall-microservice/app/auth/conf"
@@ -18,12 +19,16 @@ func NewDeliverTokenByRPCService(ctx context.Context) *DeliverTokenByRPCService 
 
 // Run create note info
 func (s *DeliverTokenByRPCService) Run(req *auth.DeliverTokenReq) (resp *auth.DeliveryResp, err error) {
+	// 如果用户 ID 为空，返回错误
+	if req.UserId == 0 {
+		return nil, errors.New("Userid is empty")
+	}
+
 	claims := jwt.MapClaims{
 		"user_id": req.UserId,
 		"exp":     time.Now().Add(time.Hour * time.Duration(conf.GetConf().JWT.ExpireTime)).Unix(), // 过期时间
 		"iat":     time.Now().Unix(),                                                               // 创建时间
 	}
-
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	tokenString, err := token.SignedString([]byte(conf.GetConf().JWT.Secret))
 	if err != nil {

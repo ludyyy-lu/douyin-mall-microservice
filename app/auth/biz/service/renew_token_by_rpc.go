@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-
 	"time"
 
 	"github.com/All-Done-Right/douyin-mall-microservice/app/auth/conf"
@@ -39,12 +38,7 @@ func (s *RenewTokenByRPCService) Run(req *auth.RenewTokenReq) (resp *auth.Delive
 		return nil, err
 	}
 
-	// 3. 验证旧的 JWT Token
-	if !token.Valid {
-		return nil, errors.New("invalid token")
-	}
-
-	// 4. 提取旧 Token 中的用户 ID
+	// 3. 提取旧 Token 中的用户 ID
 	claims, ok := token.Claims.(jwt.MapClaims)
 	if !ok {
 		return nil, errors.New("failed to extract claims from token")
@@ -54,7 +48,7 @@ func (s *RenewTokenByRPCService) Run(req *auth.RenewTokenReq) (resp *auth.Delive
 		return nil, errors.New("failed to extract user_id from claims")
 	}
 
-	// 5. 生成新的 JWT Token
+	// 4. 生成新的 JWT Token
 	newClaims := jwt.MapClaims{
 		"user_id": userId,
 		"exp":     time.Now().Add(time.Hour * time.Duration(conf.GetConf().JWT.ExpireTime)).Unix(), // 过期时间
@@ -66,7 +60,6 @@ func (s *RenewTokenByRPCService) Run(req *auth.RenewTokenReq) (resp *auth.Delive
 		return nil, err
 	}
 
-	// 6. 返回新的 JWT Token
+	// 5. 返回新的 JWT Token
 	return &auth.DeliveryResp{Token: newTokenString}, nil
-
 }

@@ -17,7 +17,7 @@ package serversuite
 import (
 	"os"
 
-	"github.com/cloudwego/biz-demo/gomall/common/mtl"
+	"github.com/All-Done-Right/douyin-mall-microservice/common/mtl"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
 	"github.com/cloudwego/kitex/pkg/transmeta"

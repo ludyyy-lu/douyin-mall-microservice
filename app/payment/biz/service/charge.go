@@ -19,9 +19,9 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/cloudwego/biz-demo/gomall/app/payment/biz/dal/mysql"
-	"github.com/cloudwego/biz-demo/gomall/app/payment/biz/model"
-	payment "github.com/cloudwego/biz-demo/gomall/rpc_gen/kitex_gen/payment"
+	"github.com/All-Done-Right/douyin-mall-microservice/app/payment/biz/dal/mysql"
+	"github.com/All-Done-Right/douyin-mall-microservice/app/payment/biz/model"
+	payment "github.com/All-Done-Right/douyin-mall-microservice/rpc_gen/kitex_gen/payment"
 	"github.com/cloudwego/kitex/pkg/kerrors"
 	creditcard "github.com/durango/go-credit-card"
 	"github.com/google/uuid"
@@ -62,6 +62,6 @@ func (s *ChargeService) Run(req *payment.ChargeReq) (resp *payment.ChargeResp, e
 	if err != nil {
 		return nil, err
 	}
-	
+
 	return &payment.ChargeResp{TransactionId: transactionId.String()}, nil
 }
