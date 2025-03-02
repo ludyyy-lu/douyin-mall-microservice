@@ -3,7 +3,7 @@
 package category
 
 import (
-	category "github.com/All-Done-Right/douyin-mall-microservice/frontend/biz/handler/category"
+	category "github.com/All-Done-Right/douyin-mall-microservice/app/frontend/biz/handler/category"
 	"github.com/cloudwego/hertz/pkg/app/server"
 )
 

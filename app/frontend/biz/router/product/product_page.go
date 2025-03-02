@@ -3,7 +3,7 @@
 package product
 
 import (
-	product "github.com/All-Done-Right/douyin-mall-microservice/frontend/biz/handler/product"
+	product "github.com/All-Done-Right/douyin-mall-microservice/app/frontend/biz/handler/product"
 	"github.com/cloudwego/hertz/pkg/app/server"
 )
 

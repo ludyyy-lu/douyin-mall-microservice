@@ -9,7 +9,7 @@
 package product
 
 import (
-	_ "github.com/All-Done-Right/douyin-mall-microservice/frontend/hertz_gen/api"
+	_ "github.com/All-Done-Right/douyin-mall-microservice/app/frontend/hertz_gen/api"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"

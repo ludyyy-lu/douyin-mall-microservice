@@ -3,9 +3,9 @@ package product
 import (
 	"context"
 
-	"github.com/All-Done-Right/douyin-mall-microservice/frontend/biz/service"
-	"github.com/All-Done-Right/douyin-mall-microservice/frontend/biz/utils"
-	product "github.com/All-Done-Right/douyin-mall-microservice/frontend/hertz_gen/frontend/product"
+	"github.com/All-Done-Right/douyin-mall-microservice/app/frontend/biz/service"
+	"github.com/All-Done-Right/douyin-mall-microservice/app/frontend/biz/utils"
+	product "github.com/All-Done-Right/douyin-mall-microservice/app/frontend/hertz_gen/frontend/product"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
 )

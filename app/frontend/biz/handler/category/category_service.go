@@ -3,9 +3,9 @@ package category
 import (
 	"context"
 
-	"github.com/All-Done-Right/douyin-mall-microservice/frontend/biz/service"
-	"github.com/All-Done-Right/douyin-mall-microservice/frontend/biz/utils"
-	category "github.com/All-Done-Right/douyin-mall-microservice/frontend/hertz_gen/frontend/category"
+	"github.com/All-Done-Right/douyin-mall-microservice/app/frontend/biz/service"
+	"github.com/All-Done-Right/douyin-mall-microservice/app/frontend/biz/utils"
+	category "github.com/All-Done-Right/douyin-mall-microservice/app/frontend/hertz_gen/frontend/category"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
 )

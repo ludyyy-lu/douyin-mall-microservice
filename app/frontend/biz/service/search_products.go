@@ -3,11 +3,11 @@ package service
 import (
 	"context"
 	"fmt"
-	"github.com/All-Done-Right/douyin-mall-microservice/frontend/infra/rpc"
+	"github.com/All-Done-Right/douyin-mall-microservice/app/frontend/infra/rpc"
 	rpcproduct "github.com/All-Done-Right/douyin-mall-microservice/rpc_gen/kitex_gen/product"
 	"github.com/cloudwego/hertz/pkg/common/utils"
 
-	product "github.com/All-Done-Right/douyin-mall-microservice/frontend/hertz_gen/frontend/product"
+	product "github.com/All-Done-Right/douyin-mall-microservice/app/frontend/hertz_gen/frontend/product"
 	"github.com/cloudwego/hertz/pkg/app"
 )
 
