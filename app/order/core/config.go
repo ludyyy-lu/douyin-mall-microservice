@@ -10,7 +10,7 @@ import (
 )
 
 func InitConfig() {
-	configPath := "app/order/conf/%s/config.toml"
+	configPath := "conf/%s/config.toml"
 	configPath = fmt.Sprintf(configPath, "test")
 	if mode := os.Getenv("ENV"); mode != "" {
 		configPath = fmt.Sprintf(configPath, mode)
