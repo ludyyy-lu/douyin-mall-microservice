@@ -17,13 +17,21 @@ import (
 
 type AddItemService struct {
 	ProductClient RPCproduct.Client
-	//CartStore     model.CartStore
+	CartStore     model.CartStore
 	Ctx           context.Context
 }
 
 // NewAddItemService new AddItemService
-func NewAddItemService(ctx context.Context) *AddItemService {
-	return &AddItemService{Ctx: ctx}
+func NewAddItemService(
+	ctx context.Context, 
+	store model.CartStore,
+	productClient RPCproduct.Client,
+	) *AddItemService {
+	return &AddItemService{
+		Ctx:       ctx,
+		CartStore: store,
+		ProductClient: productClient,
+	}
 }
 
 // Run create note info
@@ -41,7 +49,7 @@ func (s *AddItemService) Run(req *cart.AddItemReq) (resp *cart.AddItemResp, err 
 		ProductID: req.Item.ProductId,
 		Qty:       req.Item.Quantity,
 	}
-	err = model.AddCart(mysql.DB,s.Ctx,cartItem)
+	err = model.AddCart(mysql.DB, s.Ctx, cartItem)
 	if err != nil {
 		return nil, kerrors.NewBizStatusError(50000, err.Error())
 	}

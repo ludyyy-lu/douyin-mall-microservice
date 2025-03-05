@@ -13,14 +13,17 @@ import (
 )
 
 type GetCartService struct {
-	//CartStore model.CartStore
-	DB  *gorm.DB // 新增DB字段
-	Ctx context.Context
+	CartStore model.CartStore
+	DB        *gorm.DB // 新增DB字段
+	Ctx       context.Context
 }
 
 // NewGetCartService new GetCartService
-func NewGetCartService(ctx context.Context) *GetCartService {
-	return &GetCartService{Ctx: ctx}
+func NewGetCartService(ctx context.Context, store model.CartStore) *GetCartService {
+	return &GetCartService{
+		Ctx:       ctx,
+		CartStore: store,
+	}
 }
 
 // Run create note info

@@ -40,6 +40,26 @@ func (m *MockClient) EXPECT() *MockClientMockRecorder {
 	return m.recorder
 }
 
+// DeleteProducts mocks base method.
+func (m *MockClient) DeleteProducts(ctx context.Context, Req *product.DeleteProductsReq, callOptions ...callopt.Option) (*product.Empty, error) {
+	m.ctrl.T.Helper()
+	varargs := []any{ctx, Req}
+	for _, a := range callOptions {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DeleteProducts", varargs...)
+	ret0, _ := ret[0].(*product.Empty)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DeleteProducts indicates an expected call of DeleteProducts.
+func (mr *MockClientMockRecorder) DeleteProducts(ctx, Req any, callOptions ...any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]any{ctx, Req}, callOptions...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteProducts", reflect.TypeOf((*MockClient)(nil).DeleteProducts), varargs...)
+}
+
 // GetProduct mocks base method.
 func (m *MockClient) GetProduct(ctx context.Context, Req *product.GetProductReq, callOptions ...callopt.Option) (*product.GetProductResp, error) {
 	m.ctrl.T.Helper()
@@ -58,6 +78,26 @@ func (mr *MockClientMockRecorder) GetProduct(ctx, Req any, callOptions ...any) *
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]any{ctx, Req}, callOptions...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetProduct", reflect.TypeOf((*MockClient)(nil).GetProduct), varargs...)
+}
+
+// InsertProducts mocks base method.
+func (m *MockClient) InsertProducts(ctx context.Context, Req *product.InsertProductsReq, callOptions ...callopt.Option) (*product.Empty, error) {
+	m.ctrl.T.Helper()
+	varargs := []any{ctx, Req}
+	for _, a := range callOptions {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "InsertProducts", varargs...)
+	ret0, _ := ret[0].(*product.Empty)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// InsertProducts indicates an expected call of InsertProducts.
+func (mr *MockClientMockRecorder) InsertProducts(ctx, Req any, callOptions ...any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]any{ctx, Req}, callOptions...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InsertProducts", reflect.TypeOf((*MockClient)(nil).InsertProducts), varargs...)
 }
 
 // ListProducts mocks base method.
@@ -98,4 +138,24 @@ func (mr *MockClientMockRecorder) SearchProducts(ctx, Req any, callOptions ...an
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]any{ctx, Req}, callOptions...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SearchProducts", reflect.TypeOf((*MockClient)(nil).SearchProducts), varargs...)
+}
+
+// UpdateProducts mocks base method.
+func (m *MockClient) UpdateProducts(ctx context.Context, Req *product.UpdateProductsReq, callOptions ...callopt.Option) (*product.Empty, error) {
+	m.ctrl.T.Helper()
+	varargs := []any{ctx, Req}
+	for _, a := range callOptions {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "UpdateProducts", varargs...)
+	ret0, _ := ret[0].(*product.Empty)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// UpdateProducts indicates an expected call of UpdateProducts.
+func (mr *MockClientMockRecorder) UpdateProducts(ctx, Req any, callOptions ...any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]any{ctx, Req}, callOptions...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateProducts", reflect.TypeOf((*MockClient)(nil).UpdateProducts), varargs...)
 }

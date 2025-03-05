@@ -17,13 +17,16 @@ import (
 	}
 */
 type EmptyCartService struct {
-	//CartStore model.CartStore
+	CartStore model.CartStore
 	Ctx       context.Context
 }
 
 // NewEmptyCartService new EmptyCartService
-func NewEmptyCartService(Ctx context.Context) *EmptyCartService {
-	return &EmptyCartService{Ctx: Ctx}
+func NewEmptyCartService(Ctx context.Context, store model.CartStore) *EmptyCartService {
+	return &EmptyCartService{
+		Ctx:       Ctx,
+		CartStore: store,
+	}
 }
 
 // Run create note info
