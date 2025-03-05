@@ -17,13 +17,13 @@ package rpc
 import (
 	"sync"
 
-	"github.com/cloudwego/biz-demo/gomall/app/checkout/conf"
-	checkoututils "github.com/cloudwego/biz-demo/gomall/app/checkout/utils"
-	"github.com/cloudwego/biz-demo/gomall/common/clientsuite"
-	"github.com/cloudwego/biz-demo/gomall/rpc_gen/kitex_gen/cart/cartservice"
-	"github.com/cloudwego/biz-demo/gomall/rpc_gen/kitex_gen/order/orderservice"
-	"github.com/cloudwego/biz-demo/gomall/rpc_gen/kitex_gen/payment/paymentservice"
-	"github.com/cloudwego/biz-demo/gomall/rpc_gen/kitex_gen/product/productcatalogservice"
+	"github.com/All-Done-Right/douyin-mall-microservice/app/checkout/conf"
+	checkoututils "github.com/All-Done-Right/douyin-mall-microservice/app/checkout/utils"
+	"github.com/All-Done-Right/douyin-mall-microservice/common/clientsuite"
+	"github.com/All-Done-Right/douyin-mall-microservice/rpc_gen/kitex_gen/cart/cartservice"
+	"github.com/All-Done-Right/douyin-mall-microservice/rpc_gen/kitex_gen/order/orderservice"
+	"github.com/All-Done-Right/douyin-mall-microservice/rpc_gen/kitex_gen/payment/paymentservice"
+	"github.com/All-Done-Right/douyin-mall-microservice/rpc_gen/kitex_gen/product/productcatalogservice"
 	"github.com/cloudwego/kitex/client"
 )
 
