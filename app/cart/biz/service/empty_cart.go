@@ -17,7 +17,7 @@ import (
 	}
 */
 type EmptyCartService struct {
-	CartStore model.CartStore
+	//CartStore model.CartStore
 	Ctx       context.Context
 }
 

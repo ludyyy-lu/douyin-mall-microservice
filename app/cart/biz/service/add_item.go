@@ -17,7 +17,7 @@ import (
 
 type AddItemService struct {
 	ProductClient RPCproduct.Client
-	CartStore     model.CartStore
+	//CartStore     model.CartStore
 	Ctx           context.Context
 }
 
@@ -41,7 +41,7 @@ func (s *AddItemService) Run(req *cart.AddItemReq) (resp *cart.AddItemResp, err 
 		ProductID: req.Item.ProductId,
 		Qty:       req.Item.Quantity,
 	}
-	err = model.AddItem(s.Ctx, mysql.DB, cartItem)
+	err = model.AddCart(mysql.DB,s.Ctx,cartItem)
 	if err != nil {
 		return nil, kerrors.NewBizStatusError(50000, err.Error())
 	}

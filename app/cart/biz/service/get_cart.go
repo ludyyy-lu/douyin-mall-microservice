@@ -12,21 +12,10 @@ import (
 	"github.com/cloudwego/kitex/pkg/kerrors"
 )
 
-/*
 type GetCartService struct {
-	ctx context.Context
-}
-*/
-/*
-type GetCartService struct {
-	CartStore model.CartStore
-	Ctx       context.Context
-}
-*/
-type GetCartService struct {
-	CartStore model.CartStore
-	DB        *gorm.DB // 新增DB字段
-	Ctx       context.Context
+	//CartStore model.CartStore
+	DB  *gorm.DB // 新增DB字段
+	Ctx context.Context
 }
 
 // NewGetCartService new GetCartService
@@ -35,9 +24,8 @@ func NewGetCartService(ctx context.Context) *GetCartService {
 }
 
 // Run create note info
-
 func (s *GetCartService) Run(req *cart.GetCartReq) (resp *cart.GetCartResp, err error) {
-	list, err := model.GetCartByUserId(s.Ctx, mysql.DB, req.UserId)
+	list, err := model.GetCartByUserId(mysql.DB, s.Ctx, req.UserId)
 	if err != nil {
 		return nil, kerrors.NewBizStatusError(50002, err.Error())
 	}
