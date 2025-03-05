@@ -14,7 +14,6 @@ import (
 
 	model "github.com/All-Done-Right/douyin-mall-microservice/app/cart/biz/model"
 	gomock "go.uber.org/mock/gomock"
-	gorm "gorm.io/gorm"
 )
 
 // MockCartStore is a mock of CartStore interface.
@@ -41,44 +40,44 @@ func (m *MockCartStore) EXPECT() *MockCartStoreMockRecorder {
 }
 
 // AddItem mocks base method.
-func (m *MockCartStore) AddItem(db *gorm.DB, ctx context.Context, c *model.Cart) error {
+func (m *MockCartStore) AddItem(ctx context.Context, c *model.Cart) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "AddItem", db, ctx, c)
+	ret := m.ctrl.Call(m, "AddItem", ctx, c)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // AddItem indicates an expected call of AddItem.
-func (mr *MockCartStoreMockRecorder) AddItem(db, ctx, c any) *gomock.Call {
+func (mr *MockCartStoreMockRecorder) AddItem(ctx, c any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddItem", reflect.TypeOf((*MockCartStore)(nil).AddItem), db, ctx, c)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddItem", reflect.TypeOf((*MockCartStore)(nil).AddItem), ctx, c)
 }
 
 // EmptyCart mocks base method.
-func (m *MockCartStore) EmptyCart(ctx context.Context, db *gorm.DB, userId uint32) error {
+func (m *MockCartStore) EmptyCart(ctx context.Context, userId uint32) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "EmptyCart", ctx, db, userId)
+	ret := m.ctrl.Call(m, "EmptyCart", ctx, userId)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // EmptyCart indicates an expected call of EmptyCart.
-func (mr *MockCartStoreMockRecorder) EmptyCart(ctx, db, userId any) *gomock.Call {
+func (mr *MockCartStoreMockRecorder) EmptyCart(ctx, userId any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "EmptyCart", reflect.TypeOf((*MockCartStore)(nil).EmptyCart), ctx, db, userId)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "EmptyCart", reflect.TypeOf((*MockCartStore)(nil).EmptyCart), ctx, userId)
 }
 
 // GetCartByUserId mocks base method.
-func (m *MockCartStore) GetCartByUserId(db *gorm.DB, ctx context.Context, userId uint32) ([]*model.Cart, error) {
+func (m *MockCartStore) GetCartByUserId(ctx context.Context, userId uint32) ([]*model.Cart, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetCartByUserId", db, ctx, userId)
+	ret := m.ctrl.Call(m, "GetCartByUserId", ctx, userId)
 	ret0, _ := ret[0].([]*model.Cart)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // GetCartByUserId indicates an expected call of GetCartByUserId.
-func (mr *MockCartStoreMockRecorder) GetCartByUserId(db, ctx, userId any) *gomock.Call {
+func (mr *MockCartStoreMockRecorder) GetCartByUserId(ctx, userId any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetCartByUserId", reflect.TypeOf((*MockCartStore)(nil).GetCartByUserId), db, ctx, userId)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetCartByUserId", reflect.TypeOf((*MockCartStore)(nil).GetCartByUserId), ctx, userId)
 }

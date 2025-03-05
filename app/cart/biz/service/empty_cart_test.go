@@ -12,7 +12,6 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	gomock "go.uber.org/mock/gomock"
-	
 )
 
 func TestEmptyCartService_Success(t *testing.T) {
@@ -21,7 +20,7 @@ func TestEmptyCartService_Success(t *testing.T) {
 
 	mockStore := mocks.NewMockCartStore(ctrl)
 	mockStore.EXPECT().
-		EmptyCart(gomock.Any(), gomock.Any(), int32(1001)).
+		EmptyCart(gomock.Any(), uint32(1001)).
 		Return(nil)
 
 	svc := service.NewEmptyCartService(context.Background(), mockStore)
@@ -37,7 +36,7 @@ func TestEmptyCartService_DatabaseError(t *testing.T) {
 
 	mockStore := mocks.NewMockCartStore(ctrl)
 	mockStore.EXPECT().
-		EmptyCart(gomock.Any(), gomock.Any(), int32(1001)).
+		EmptyCart(gomock.Any(), uint32(1001)).
 		Return(gorm.ErrInvalidTransaction)
 
 	svc := service.NewEmptyCartService(context.Background(), mockStore)

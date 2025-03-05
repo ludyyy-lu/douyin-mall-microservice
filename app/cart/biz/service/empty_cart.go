@@ -3,7 +3,6 @@ package service
 import (
 	"context"
 
-	"github.com/All-Done-Right/douyin-mall-microservice/app/cart/biz/dal/mysql"
 	"github.com/All-Done-Right/douyin-mall-microservice/app/cart/biz/model"
 
 	cart "github.com/All-Done-Right/douyin-mall-microservice/rpc_gen/kitex_gen/cart"
@@ -11,11 +10,6 @@ import (
 	"github.com/cloudwego/kitex/pkg/kerrors"
 )
 
-/*
-	type EmptyCartService struct {
-		ctx context.Context
-	}
-*/
 type EmptyCartService struct {
 	CartStore model.CartStore
 	Ctx       context.Context
@@ -32,7 +26,7 @@ func NewEmptyCartService(Ctx context.Context, store model.CartStore) *EmptyCartS
 // Run create note info
 
 func (s *EmptyCartService) Run(req *cart.EmptyCartReq) (resp *cart.EmptyCartResp, err error) {
-	err = model.EmptyCart(s.Ctx, mysql.DB, req.UserId)
+	err = s.CartStore.EmptyCart(s.Ctx, req.UserId)
 	if err != nil {
 		return nil, kerrors.NewBizStatusError(50001, err.Error())
 	}

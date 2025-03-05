@@ -20,15 +20,19 @@ func TestGetCartService_Success(t *testing.T) {
 
 	// 创建 Mock CartStore
 	mockStore := mocks.NewMockCartStore(ctrl)
-	expectedCarts := []model.Cart{
-		{ProductID: 1, Qty: 2},
-		{ProductID: 2, Qty: 3},
-	}
-
+	/*
+		expectedCarts := []model.Cart{
+			{ProductID: 1, Qty: 2},
+			{ProductID: 2, Qty: 3},
+		}
+	*/
 	// 设置 Mock 预期行为
 	mockStore.EXPECT().
-		GetCartByUserId(gomock.Any(), gomock.Any(), int32(1001)).
-		Return(expectedCarts, nil)
+		GetCartByUserId(gomock.Any(), gomock.Eq(uint32(1001))).
+		Return([]model.Cart{
+			{ProductID: 1, Qty: 2},
+			{ProductID: 2, Qty: 3},
+		}, nil)
 
 	// 初始化服务
 	svc := service.NewGetCartService(context.Background(), mockStore)
@@ -46,7 +50,7 @@ func TestGetCartService_DatabaseError(t *testing.T) {
 
 	mockStore := mocks.NewMockCartStore(ctrl)
 	mockStore.EXPECT().
-		GetCartByUserId(gomock.Any(), gomock.Any(), int32(1001)).
+		GetCartByUserId(gomock.Any(), uint32(1001)).
 		Return(nil, gorm.ErrRecordNotFound)
 
 	svc := service.NewGetCartService(context.Background(), mockStore)
