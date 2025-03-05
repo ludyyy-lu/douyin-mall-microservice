@@ -10,13 +10,6 @@ import (
 	"gorm.io/gorm"
 )
 
-/*
-	type CartStore interface {
-		AddItem(ctx context.Context, db *sql.DB, item *Cart) error
-		EmptyCart(ctx context.Context, db *sql.DB, userID int64) error
-		GetCartByUserId(ctx context.Context, db *sql.DB, userID int64) ([]*Cart, error)
-	}
-*/
 type Cart struct {
 	//gorm.Model
 	Base
@@ -29,7 +22,7 @@ func (Cart) TableName() string {
 	return "cart"
 }
 
-func AddCart(db *gorm.DB, ctx context.Context, c *Cart) error {
+func AddItem(db *gorm.DB, ctx context.Context, c *Cart) error {
 	var find Cart
 	err := db.WithContext(ctx).Model(&Cart{}).Where(&Cart{UserID: c.UserID, ProductID: c.ProductID}).First(&find).Error
 	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
